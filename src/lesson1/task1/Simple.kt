@@ -76,7 +76,7 @@ fun seconds(hours: Int, minutes: Int, seconds: Int) = hours * 60 * 60 + minutes 
  * 1 сажень = 3 аршина = 48 вершков, 1 вершок = 4.445 см.
  */
 fun lengthInMeters(sagenes: Int, arshins: Int, vershoks: Int) =
-    ((sagenes * 48 + arshins * 16 + vershoks).toDouble() * 4.445) / 100
+    (sagenes * 48 + arshins * 16 + vershoks) * 4.445 / 100
 
 /**
  * Тривиальная (1 балл)
@@ -85,7 +85,7 @@ fun lengthInMeters(sagenes: Int, arshins: Int, vershoks: Int) =
  * Вывести значение того же угла в радианах (например, 0.63256).
  */
 fun angleInRadian(deg: Int, min: Int, sec: Int) =
-    deg.toDouble() * (PI / 180) + min.toDouble() * (PI / (180 * 60)) + sec.toDouble() * (PI / (180 * 60 * 60))
+    deg.toDouble() * PI / 180 + min.toDouble() * PI / (180 * 60) + sec.toDouble() * PI / (180 * 60 * 60)
 
 
 /**
@@ -123,8 +123,7 @@ fun travelMinutes(hoursDepart: Int, minutesDepart: Int, hoursArrive: Int, minute
  */
 fun accountInThreeYears(initial: Int, percent: Int): Double {
     val decpercent = percent.toDouble() / 100 + 1
-
-    return initial * decpercent * decpercent * decpercent
+    return initial * decpercent.pow(3)
 }
 
 /**

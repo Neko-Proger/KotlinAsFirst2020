@@ -5,7 +5,7 @@ package lesson2.task1
 import lesson1.task1.discriminant
 import kotlin.math.max
 import kotlin.math.sqrt
-
+import kotlin.math.*
 // Урок 2: ветвления (здесь), логический тип (см. 2.2).
 // Максимальное количество баллов = 6
 // Рекомендуемое количество баллов = 5
@@ -68,9 +68,8 @@ fun minBiRoot(a: Double, b: Double, c: Double): Double {
  * Мой возраст. Для заданного 0 < n < 200, рассматриваемого как возраст человека,
  * вернуть строку вида: «21 год», «32 года», «12 лет».
  */
-fun ageDescription(age: Int): String {
-    return when (age) {
-
+fun ageDescription(age: Int) =
+    when (age) {
         1, 101 -> "$age год"
         2, 102, 3, 103, 4, 104 -> "$age года"
         in 21..100 step 10 -> "$age год"
@@ -81,10 +80,8 @@ fun ageDescription(age: Int): String {
         in 122..200 step 10 -> "$age года"
         in 123..200 step 10 -> "$age года"
         in 124..200 step 10 -> "$age года"
-
         else -> "$age лет"
     }
-}
 
 
 /**
@@ -101,22 +98,13 @@ fun timeForHalfWay(
 ): Double {
     var halfWay = (t1 * v1 + t2 * v2 + t3 * v3) / 2
     var time = 0.0
-    if (halfWay > t1 * v1) {
-        halfWay -= t1 * v1
-        time += t1
-    } else {
-        time += halfWay / v1
-        return time
-    }
-    if (halfWay > t2 * v2){
-        halfWay -= t2 * v2
-        time += t2
-    } else {
-        time += halfWay / v2
-        return time
-    }
-    time += halfWay / v3
-    return time
+    if (halfWay <= t1 * v1) return time + halfWay / v1
+    halfWay -= t1 * v1
+    time += t1
+    if (halfWay <= t2 * v2) return time + halfWay / v2
+    halfWay -= t2 * v2
+    time += t2
+    return time + halfWay / v3
 }
 
 /**
@@ -134,8 +122,8 @@ fun whichRookThreatens(
     rookX2: Int, rookY2: Int
 ): Int {
     var threat = 0
-    if ((rookX1 == kingX) or (rookY1 == kingY)) threat++
-    if ((rookX2 == kingX) or (rookY2 == kingY)) threat += 2
+    if ((rookX1 == kingX) || (rookY1 == kingY)) threat += 1
+    if ((rookX2 == kingX) || (rookY2 == kingY)) threat += 2
     return threat
 }
 
@@ -155,12 +143,9 @@ fun rookOrBishopThreatens(
     bishopX: Int, bishopY: Int
 ): Int {
     var threat = 0
-
     if ((kingX == rookX) or (kingY == rookY)) threat++
-
-    if ((bishopY - bishopX == kingY - kingX) or (bishopY - (9 - bishopX) == kingY - (9 - kingX))) threat += 2
+    if ((bishopY - bishopX == kingY - kingX) || (bishopY - (9 - bishopX) == kingY - (9 - kingX))) threat += 2
     return threat
-
 }
 
 /**
@@ -176,7 +161,7 @@ fun triangleKind(a: Double, b: Double, c: Double): Int {
     var b1: Double
     var c1: Double
     if (a > b) {
-b1 = a
+        b1 = a
         a1 = b
     } else {
         a1 = a
@@ -185,14 +170,15 @@ b1 = a
     if (b1 > c) {
         c1 = b1
         b1 = c
-
     } else {
         c1 = c
     }
-    if ((b1 + c1 < a1) or (a1 + c1 < b1) or (a1 + b1 < c1)) return -1
-    if (c1 * c1 == a1 * a1 + b1 * b1) return 1
-    return if (c1 * c1 < a1 * a1 + b1 * b1) 0 else 2
-
+    if ((b1 + c1 < a1) || (a1 + c1 < b1) || (a1 + b1 < c1)) return -1
+    return when {
+        c1.pow(2) == a1.pow(2) + b1.pow(2) -> 1
+        c1.pow(2) < a1.pow(2) + b1.pow(2) -> 0
+        else -> 2
+    }
 }
 
 /**
@@ -205,10 +191,9 @@ b1 = a
  */
 fun segmentLength(a: Int, b: Int, c: Int, d: Int): Int {
     if ((c > b) or (d < a)) return -1
-    if (c < a) {
-        return if (d > b) b - a else d - a
-
+    return if (c < a) {
+        if (d > b) b - a else d - a
     } else {
-        return if (d > b) b - c else d - c
+        if (d > b) b - c else d - c
     }
 }
