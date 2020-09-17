@@ -120,8 +120,8 @@ fun whichRookThreatens(
     rookX2: Int, rookY2: Int
 ): Int {
     var threat = 0
-    if ((rookX1 == kingX) || (rookY1 == kingY)) threat += 1
-    if ((rookX2 == kingX) || (rookY2 == kingY)) threat += 2
+    if (rookX1 == kingX || rookY1 == kingY) threat += 1
+    if (rookX2 == kingX || rookY2 == kingY) threat += 2
     return threat
 }
 
@@ -141,8 +141,8 @@ fun rookOrBishopThreatens(
     bishopX: Int, bishopY: Int
 ): Int {
     var threat = 0
-    if ((kingX == rookX) or (kingY == rookY)) threat++
-    if ((bishopY - bishopX == kingY - kingX) || (bishopY - (9 - bishopX) == kingY - (9 - kingX))) threat += 2
+    if ((kingX == rookX) || (kingY == rookY)) threat += 1
+    if (bishopY - bishopX == kingY - kingX || bishopY - (9 - bishopX) == kingY - (9 - kingX)) threat += 2
     return threat
 }
 
@@ -171,8 +171,8 @@ fun triangleKind(a: Double, b: Double, c: Double): Int {
     } else {
         c1 = c
     }
-    if ((b1 + c1 < a1) || (a1 + c1 < b1) || (a1 + b1 < c1)) return -1
     return when {
+        b1 + c1 < a1 || a1 + c1 < b1 || a1 + b1 < c1 -> -1
         c1.pow(2) == a1.pow(2) + b1.pow(2) -> 1
         c1.pow(2) < a1.pow(2) + b1.pow(2) -> 0
         else -> 2
@@ -188,7 +188,7 @@ fun triangleKind(a: Double, b: Double, c: Double): Int {
  * Если пересечения нет, вернуть -1.
  */
 fun segmentLength(a: Int, b: Int, c: Int, d: Int): Int {
-    if ((c > b) or (d < a)) return -1
+    if (c > b || d < a) return -1
     return if (c < a) {
         if (d > b) b - a else d - a
     } else {

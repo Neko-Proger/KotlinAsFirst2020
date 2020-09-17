@@ -19,7 +19,8 @@ fun pointInsideCircle(x: Double, y: Double, x0: Double, y0: Double, r: Double) =
  * Четырехзначное число назовем счастливым, если сумма первых двух ее цифр равна сумме двух последних.
  * Определить, счастливое ли заданное число, вернуть true, если это так.
  */
-fun isNumberHappy(number: Int) = number / 1000 + number % 1000 / 100 == number % 100 / 10 + number % 10
+fun isNumberHappy(number: Int) = number / 1000 + number % 1000 / 100 == number % 100 / 10 +
+        number % 10
 
 /**
  * Простая (2 балла)
@@ -28,8 +29,8 @@ fun isNumberHappy(number: Int) = number / 1000 + number % 1000 / 100 == number %
  * Определить, угрожают ли они друг другу. Вернуть true, если угрожают.
  * Считать, что ферзи не могут загораживать друг друга.
  */
-fun queenThreatens(x1: Int, y1: Int, x2: Int, y2: Int): Boolean =
-    (x1 == x2) or (y1 == y2) or (y1 - x1 == y2 - x2) or (y1 - (9 - x1) == y2 - (9 - x2))
+fun queenThreatens(x1: Int, y1: Int, x2: Int, y2: Int) =
+    x1 == x2 || y1 == y2 || y1 - x1 == y2 - x2 || y1 - (9 - x1) == y2 - (9 - x2)
 
 
 /**
@@ -40,7 +41,7 @@ fun queenThreatens(x1: Int, y1: Int, x2: Int, y2: Int): Boolean =
  */
 fun daysInMonth(month: Int, year: Int): Int {
     val data = arrayOf(31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31)
-    if (month == 2 && ((year % 4 == 0 && year % 100 != 0) || (year % 400 == 0))) return data[month - 1] + 1
+    if (month == 2 && ((year % 4 == 0 && year % 100 != 0) || year % 400 == 0)) return data[month - 1] + 1
     return data[month - 1]
 }
 
@@ -66,9 +67,9 @@ fun circleInside(
  * Вернуть true, если кирпич пройдёт
  */
 fun brickPasses(a: Int, b: Int, c: Int, r: Int, s: Int) =
-    (((a <= r) && (b <= s)) || ((a <= s) && (b <= r))) ||
-            (((a <= r) && (c <= s)) || ((a <= s) && (c <= r))) ||
-            (((b <= r) && (c <= s)) || ((b <= s) && (c <= r)))
+    (a <= r && b <= s) || (a <= s && b <= r) ||
+            (a <= r && c <= s) || (a <= s && c <= r) ||
+            (b <= r && c <= s) || (b <= s && c <= r)
 
 
 
