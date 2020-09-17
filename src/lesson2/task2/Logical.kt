@@ -29,7 +29,7 @@ fun isNumberHappy(number: Int) = number / 1000 + number % 1000 / 100 == number %
  * Считать, что ферзи не могут загораживать друг друга.
  */
 fun queenThreatens(x1: Int, y1: Int, x2: Int, y2: Int): Boolean =
-    (((x1 == x2) or (y1 == y2) or (y1 - x1 == y2 - x2) or (y1 - (9 - x1) == y2 - (9 - x2))))
+    (x1 == x2) or (y1 == y2) or (y1 - x1 == y2 - x2) or (y1 - (9 - x1) == y2 - (9 - x2))
 
 
 /**

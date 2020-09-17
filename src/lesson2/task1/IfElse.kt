@@ -82,8 +82,6 @@ fun ageDescription(age: Int) =
         in 124..200 step 10 -> "$age года"
         else -> "$age лет"
     }
-
-
 /**
  * Простая (2 балла)
  *
