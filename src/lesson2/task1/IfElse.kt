@@ -159,7 +159,7 @@ fun rookOrBishopThreatens(
  * Если такой треугольник не существует, вернуть -1.
  */
 fun triangleKind(a: Double, b: Double, c: Double): Int {
-    var a1: Double
+    val a1: Double
     var b1: Double
     var c1: Double
     if (a > b) {
