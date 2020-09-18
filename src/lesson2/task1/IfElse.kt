@@ -6,6 +6,7 @@ import lesson1.task1.discriminant
 import kotlin.math.max
 import kotlin.math.sqrt
 import kotlin.math.*
+
 // Урок 2: ветвления (здесь), логический тип (см. 2.2).
 // Максимальное количество баллов = 6
 // Рекомендуемое количество баллов = 5
@@ -82,6 +83,7 @@ fun ageDescription(age: Int) =
         in 124..200 step 10 -> "$age года"
         else -> "$age лет"
     }
+
 /**
  * Простая (2 балла)
  *
@@ -141,8 +143,10 @@ fun rookOrBishopThreatens(
     bishopX: Int, bishopY: Int
 ): Int {
     var threat = 0
-    if ((kingX == rookX) || (kingY == rookY)) threat += 1
-    if (bishopY - bishopX == kingY - kingX || bishopY - (9 - bishopX) == kingY - (9 - kingX)) threat += 2
+    if (kingX == rookX || kingY == rookY) threat += 1
+    if (bishopY - bishopX == kingY - kingX
+        || bishopY - (9 - bishopX) == kingY - (9 - kingX)
+    ) threat += 2
     return threat
 }
 
