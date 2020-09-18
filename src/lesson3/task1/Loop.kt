@@ -79,7 +79,7 @@ fun digitNumber(n: Int): Int {
     var numbOfDigits = 0
     var number = n
     if (n == 0) return 1
-    while (number > 0) {
+    while (number != 0) {
         number /= 10
         numbOfDigits += 1
     }
@@ -286,7 +286,7 @@ fun sin(x: Double, eps: Double): Double {
     var n = 0
     var d = x
     var sn = (-1.0).pow(n) / factorial(2 * n + 1) * d.pow(2 * n + 1)
-    if (x > 2 * kotlin.math.PI) {
+    if (abs(x) > 2 * kotlin.math.PI) {
         d = (x / kotlin.math.PI) % 2 * kotlin.math.PI
     }
     var sum = d
@@ -313,7 +313,7 @@ fun cos(x: Double, eps: Double): Double {
     var n = 0
     var d = x
     var sn = (-1.0).pow(n) / factorial(2 * n) * d.pow(2 * n)
-    if (x > 2 * kotlin.math.PI) {
+    if (abs(x) > 2 * kotlin.math.PI) {
         d = (x / kotlin.math.PI) % 2 * kotlin.math.PI
     }
     var sum = sn
