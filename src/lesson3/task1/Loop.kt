@@ -118,7 +118,7 @@ fun fib(n: Int): Int {
  * Для заданного числа n > 1 найти минимальный делитель, превышающий 1
  */
 fun minDivisor(n: Int): Int {
-    for (i in 2..20) {
+    for (i in 2..n / 4) {
         if (n % i == 0) return i
     }
     return n
@@ -285,10 +285,11 @@ fun hasDifferentDigits(n: Int): Boolean {
 fun sin(x: Double, eps: Double): Double {
     var n = 0
     var d = x
-    var sn = -100.0
+    var sn = -10000.0
     if (abs(x) > 2 * PI) {
         d = (x / PI) % 2 * PI
     }
+    n++
     var sum = d
     while (abs(sn) >= eps) {
         sn = (-1.0).pow(n) / factorial(2 * n + 1) * d.pow(2 * n + 1)
