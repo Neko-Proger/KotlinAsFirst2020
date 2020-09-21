@@ -161,7 +161,7 @@ fun rookOrBishopThreatens(
 fun triangleKind(a: Double, b: Double, c: Double): Int {
     val a1: Double
     var b1: Double
-    var c1: Double
+    val c1: Double
     if (a > b) {
         b1 = a
         a1 = b

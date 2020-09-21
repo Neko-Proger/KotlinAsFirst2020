@@ -6,6 +6,7 @@ import kotlin.math.sqrt
 import kotlin.math.floor
 import kotlin.math.pow
 import kotlin.math.abs
+import kotlin.math.PI
 
 // Урок 3: циклы
 // Максимальное количество баллов = 9
@@ -93,14 +94,15 @@ fun digitNumber(n: Int): Int {
  * Ряд Фибоначчи определён следующим образом: fib(1) = 1, fib(2) = 1, fib(n+2) = fib(n) + fib(n+1)
  */
 fun fib(n: Int): Int {
-    var number1 = 1
-    var number2 = 1
-    var number3 = 2
+
     return when (n) {
         1 -> 1
         2 -> 1
         3 -> 2
         else -> {
+            var number1 = 1
+            var number2 = 1
+            var number3 = 2
             for (i in 4..n) {
                 number1 = number2
                 number2 = number3
@@ -117,11 +119,10 @@ fun fib(n: Int): Int {
  * Для заданного числа n > 1 найти минимальный делитель, превышающий 1
  */
 fun minDivisor(n: Int): Int {
-    var minDivider = 2
-    while (n % minDivider != 0) {
-        minDivider++
+    for (i in 2..20) {
+        if (n % i == 0) return i
     }
-    return minDivider
+    return n
 }
 
 /**
@@ -130,9 +131,12 @@ fun minDivisor(n: Int): Int {
  * Для заданного числа n > 1 найти максимальный делитель, меньший n
  */
 fun maxDivisor(n: Int): Int {
-    var maxDivider = n - 1
-    while (n % maxDivider != 0 && maxDivider > 1) {
-        maxDivider--
+    var maxDivider = 0
+    for (i in n / 2 downTo 1) {
+        if (n % i == 0 && n != i) {
+            maxDivider = i
+            break
+        }
     }
     return maxDivider
 }
@@ -170,12 +174,12 @@ fun collatzSteps(x: Int): Int {
  * минимальное число k, которое делится и на m и на n без остатка
  */
 fun lcm(m: Int, n: Int): Int {
-    val max = if (m > n) m else n
-    val min = if (m > n) n else m
-    for (i in 1..max) {
-        if (max * i % min == 0) return max * i
+    var number1 = m
+    var number2 = n
+    while (number1 != 0 && number2 != 0) {
+        if (number1 > number2) number1 %= number2 else number2 %= number1
     }
-    return max * min
+    return m * n / (number1 + number2)
 }
 
 /**
@@ -186,12 +190,13 @@ fun lcm(m: Int, n: Int): Int {
  * Например, 25 и 49 взаимно простые, а 6 и 8 -- нет.
  */
 fun isCoPrime(m: Int, n: Int): Boolean {
-    val max = if (m > n) m else n
-    val min = if (m > n) n else m
-    for (i in 2..max) {
-        if (max % i == 0 && min % i == 0) return false
+    var number1 = m
+    var number2 = n
+    while (number1 != 0 && number2 != 0) {
+        if (number1 > number2) number1 %= number2 else number2 %= number1
     }
-    return true
+    if (number1 + number2 == 1) return true
+    return false
 }
 
 /**
@@ -202,10 +207,8 @@ fun isCoPrime(m: Int, n: Int): Boolean {
  * Например, для интервала 21..28 21 <= 5*5 <= 28, а для интервала 51..61 квадрата не существует.
  */
 fun squareBetweenExists(m: Int, n: Int): Boolean {
-    var k: Double
     for (i in m..n) {
-        k = sqrt(i.toDouble())
-        if (floor(k) == k) return true
+        if (floor(sqrt(i.toDouble())) == sqrt(i.toDouble())) return true
     }
     return false
 }
@@ -237,14 +240,12 @@ fun revert(n: Int): Int {
  * Использовать операции со строками в этой задаче запрещается.
  */
 fun isPalindrome(n: Int): Boolean {
-    var counter: Long = 1
-    var number = n.toLong()
-    while (number > 0) {
-        number /= 10
+    val amountOfNumber = digitNumber(n) - 1
+    var counter = 1L
+    for (i in 1..amountOfNumber) {
         counter *= 10
     }
-    counter /= 10
-    number = n.toLong()
+    var number = n.toLong()
     while (number > 9) {
         if (number % 10 != number / counter) return false
         number %= counter
@@ -285,12 +286,11 @@ fun hasDifferentDigits(n: Int): Boolean {
 fun sin(x: Double, eps: Double): Double {
     var n = 0
     var d = x
-    var sn = (-1.0).pow(n) / factorial(2 * n + 1) * d.pow(2 * n + 1)
-    if (abs(x) > 2 * kotlin.math.PI) {
-        d = (x / kotlin.math.PI) % 2 * kotlin.math.PI
+    var sn = -100.0
+    if (abs(x) > 2 * PI) {
+        d = (x / PI) % 2 * PI
     }
     var sum = d
-    n++
     while (abs(sn) >= eps) {
         sn = (-1.0).pow(n) / factorial(2 * n + 1) * d.pow(2 * n + 1)
         sum += sn
@@ -298,7 +298,6 @@ fun sin(x: Double, eps: Double): Double {
     }
     return sum
 }
-
 
 /**
  * Средняя (4 балла)
@@ -312,13 +311,12 @@ fun sin(x: Double, eps: Double): Double {
 fun cos(x: Double, eps: Double): Double {
     var n = 0
     var d = x
-    var sn = (-1.0).pow(n) / factorial(2 * n) * d.pow(2 * n)
-    if (abs(x) > 2 * kotlin.math.PI) {
-        d = (x / kotlin.math.PI) % 2 * kotlin.math.PI
+    var sn = -10000.0
+    if (abs(x) > 2 * PI) {
+        d = (x / PI) % 2 * PI
     }
-    var sum = sn
-    n++
-    while (abs(sn) >= eps) {
+    var sum = 0.0
+    while (abs(sn) >= abs(eps)) {
         sn = (-1.0).pow(n) / factorial(2 * n) * d.pow(2 * n)
         sum += sn
         n += 1
@@ -335,33 +333,22 @@ fun cos(x: Double, eps: Double): Double {
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun numberOfDigits(n: Int): Int {
-    var x = 0
-    var number = n
-    while (number > 0) {
-        number /= 10
-        x += 1
-    }
-    return x
-}
-
 fun squareSequenceDigit(n: Int): Int {
     var number = 1
-    var numeral = n
-    var numberDigits = 0
+    var digitPosition = n
+
     while (true) {
-        numberDigits = numberOfDigits(number * number)
-        if (numeral - numberDigits <= 0) {
-            numeral -= numberDigits
+        val numberDigits = digitNumber(number * number)
+        if (digitPosition - numberDigits <= 0) {
+            digitPosition -= numberDigits
             break
         }
-        numeral -= numberDigits
+        digitPosition -= numberDigits
         number += 1
-
     }
     number *= number
-    while (numeral != 0) {
-        numeral += 1
+    while (digitPosition != 0) {
+        digitPosition += 1
         number /= 10
     }
     return number % 10
@@ -377,27 +364,27 @@ fun squareSequenceDigit(n: Int): Int {
  * Использовать операции со строками в этой задаче запрещается.
  */
 fun fibSequenceDigit(n: Int): Int {
-    var number1 = 1
-    var number2 = 1
-    var numeral = n - 2
-    var numberDigits = 0
-    var number3 = 0
     when (n) {
         1 -> return 1
         2 -> return 1
         else -> {
+            var number1 = 1
+            var number2 = 1
+            var digitPosition = n - 2
+            var numberDigits: Int
+            var number3: Int
             while (true) {
                 number3 = number1 + number2
-                numberDigits = numberOfDigits(number3)
-                numeral -= numberDigits
-                if (numeral <= 0) {
+                numberDigits = digitNumber(number3)
+                digitPosition -= numberDigits
+                if (digitPosition <= 0) {
                     break
                 }
                 number1 = number2
                 number2 = number3
             }
-            while (numeral != 0) {
-                numeral += 1
+            while (digitPosition != 0) {
+                digitPosition += 1
                 number3 /= 10
             }
             return number3 % 10
