@@ -100,7 +100,7 @@ fun fib(n: Int): Int {
         2 -> 1
         3 -> 2
         else -> {
-            var number1 = 1
+            var number1: Int
             var number2 = 1
             var number3 = 2
             for (i in 4..n) {
@@ -336,7 +336,6 @@ fun cos(x: Double, eps: Double): Double {
 fun squareSequenceDigit(n: Int): Int {
     var number = 1
     var digitPosition = n
-
     while (true) {
         val numberDigits = digitNumber(number * number)
         if (digitPosition - numberDigits <= 0) {
