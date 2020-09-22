@@ -117,7 +117,8 @@ fun fib(n: Int) = when (n) {
  * Для заданного числа n > 1 найти минимальный делитель, превышающий 1
  */
 fun minDivisor(n: Int): Int {
-    for (i in 2..50) {
+    val limit = 2.0.pow(digitNumber(n) - 1).toInt()
+    for (i in 2..n / limit) {
         if (n % i == 0) return i
     }
     return n
