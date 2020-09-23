@@ -117,9 +117,10 @@ fun fib(n: Int) = when (n) {
  * Для заданного числа n > 1 найти минимальный делитель, превышающий 1
  */
 fun minDivisor(n: Int): Int {
-    val limit = 2.0.pow(digitNumber(n) - 1).toInt()
-    for (i in 2..n / limit) {
-        if (n % i == 0) return i
+    var limit = 2
+    while (limit <= n / limit) {
+        if (n % limit == 0) return limit
+        limit += 1
     }
     return n
 }
@@ -130,11 +131,10 @@ fun minDivisor(n: Int): Int {
  * Для заданного числа n > 1 найти максимальный делитель, меньший n
  */
 fun maxDivisor(n: Int): Int {
-    var maxDivis: Int
-    var div = 2
-    while (div <= n / 7) {
-        if (n % div == 0) return n / div else maxDivis = 0
-        div += 1
+    var limit = 2
+    while (limit <= n / limit) {
+        if (n % limit == 0) return n / limit
+        limit += 1
     }
     return 1
 }
@@ -238,9 +238,8 @@ fun revert(n: Int): Int {
  */
 fun isPalindrome(n: Int): Boolean {
     val amountOfNumber = digitNumber(n) - 1
-    val f = 10.0
-    var counter = f.pow(amountOfNumber).toLong()
-    var number = n.toLong()
+    var counter = 10.0.pow(amountOfNumber).toInt()
+    var number = n
     while (number > 9) {
         if (number % 10 != number / counter) return false
         number %= counter
@@ -279,15 +278,16 @@ fun hasDifferentDigits(n: Int): Boolean {
  * Использовать kotlin.math.sin и другие стандартные реализации функции синуса в этой задаче запрещается.
  */
 fun sin(x: Double, eps: Double): Double {
-    var n = 0
+    var n = 1
     val d = if (abs(x) > 2 * PI) (x / PI) % 2 * PI else x
-    n++
     var sum = d
-    while (abs((-1.0).pow(n) / factorial(2 * n + 1) * d.pow(2 * n + 1)) >= abs(eps)) {
-        sum += (-1.0).pow(n) / factorial(2 * n + 1) * d.pow(2 * n + 1)
+    var sn = 0.0
+    do {
+        sum += sn
+        sn = (-1.0).pow(n) / factorial(2 * n + 1) * d.pow(2 * n + 1)
         n += 1
-    }
-    return sum
+    } while (abs(sn) >= abs(eps))
+    return sum + sn
 }
 
 /**
@@ -303,10 +303,12 @@ fun cos(x: Double, eps: Double): Double {
     var n = 0
     val d = if (abs(x) > 2 * PI) (x / PI) % 2 * PI else x
     var sum = 0.0
-    while (abs((-1.0).pow(n) / factorial(2 * n) * d.pow(2 * n)) >= abs(eps)) {
-        sum += (-1.0).pow(n) / factorial(2 * n) * d.pow(2 * n)
+    var sn = 0.0
+    do {
+        sum += sn
+        sn = (-1.0).pow(n) / factorial(2 * n) * d.pow(2 * n)
         n += 1
-    }
+    } while (abs(sn) >= abs(eps))
     return sum
 }
 
