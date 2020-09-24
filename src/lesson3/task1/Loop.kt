@@ -118,7 +118,7 @@ fun fib(n: Int) = when (n) {
  */
 fun minDivisor(n: Int): Int {
     var limit = 2
-    while (limit <= n / limit) {
+    while (limit <= sqrt(n.toDouble())) {
         if (n % limit == 0) return limit
         limit += 1
     }
@@ -132,7 +132,7 @@ fun minDivisor(n: Int): Int {
  */
 fun maxDivisor(n: Int): Int {
     var limit = 2
-    while (limit <= n / limit) {
+    while (limit <= sqrt(n.toDouble())) {
         if (n % limit == 0) return n / limit
         limit += 1
     }
