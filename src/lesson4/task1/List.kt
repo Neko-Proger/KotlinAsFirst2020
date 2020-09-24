@@ -144,7 +144,7 @@ fun mean(list: List<Double>): Double = if (list.isEmpty()) 0.0 else list.sum() /
  * Обратите внимание, что данная функция должна изменять содержание списка list, а не его копии.
  */
 fun center(list: MutableList<Double>): MutableList<Double> {
-    val average = list.sum() / list.size
+    val average = list.average()
     for (i in list.indices) {
         list[i] -= average
     }
@@ -159,11 +159,8 @@ fun center(list: MutableList<Double>): MutableList<Double> {
  * C = a1b1 + a2b2 + ... + aNbN. Произведение пустых векторов считать равным 0.
  */
 fun times(a: List<Int>, b: List<Int>): Int {
-    var c = 0
-    for (i in a.indices) {
-        c += a[i] * b[i]
-    }
-    return c
+    val c = a.zip(b) { a, b -> a * b }
+    return c.sum()
 }
 
 /**
@@ -212,14 +209,13 @@ fun accumulate(list: MutableList<Int>): MutableList<Int> {
 
 fun factorize(n: Int): List<Int> {
     var number = n
-    var e: Int
-    val list: MutableList<Int> = mutableListOf()
+    val list = mutableListOf<Int>()
     while (number != 1) {
-        e = minDivisor(number)
+        val e = minDivisor(number)
         list.add(e)
         number /= e
     }
-    return list.toList()
+    return list
 }
 
 /**
@@ -249,11 +245,8 @@ fun convert(n: Int, base: Int): List<Int> {
         number /= base
     }
     list.add(number)
-    val invertedList = mutableListOf<Int>()
-    for (i in list.indices) {
-        invertedList.add(list[list.size - 1 - i])
-    }
-    return invertedList.toList()
+    list.reverse()
+    return list
 }
 
 /**
@@ -269,15 +262,9 @@ fun convert(n: Int, base: Int): List<Int> {
  */
 fun convertToString(n: Int, base: Int): String {
     val list = convert(n, base)
-    val letters = listOf(
-        "a", "b", "c", "d", "e", "f", "g", "h",
-        "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x",
-        "y", "z"
-    )
-    var str = ""
-    var e: Int
-    for (i in list.indices) {
-        e = list[i]
+    val letters = "abcdefghijklmnopqrstuvwxyz"
+    var str = buildString {}
+    for (e in list) {
         if (e < 10) {
             str += "$e"
             continue
@@ -297,10 +284,8 @@ fun convertToString(n: Int, base: Int): String {
 fun decimal(digits: List<Int>, base: Int): Int {
     var decNS = 0
     val baseD = base.toDouble()
-    var degree = digits.size - 1
     for (i in digits.indices) {
-        decNS += digits[i] * baseD.pow(degree).toInt()
-        degree -= 1
+        decNS += digits[i] * baseD.pow(digits.size - 1 - i).toInt()
     }
     return decNS
 }
@@ -320,19 +305,10 @@ fun decimal(digits: List<Int>, base: Int): Int {
 fun decimalFromString(str: String, base: Int): Int {
     var decNS = 0
     val baseD = base.toDouble()
-    val letters = listOf(
-        "a", "b", "c", "d", "e", "f", "g", "h",
-        "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x",
-        "y", "z"
-    )
-    var e: Int
+    val letters = "0123456789abcdefghijklmnopqrstuvwxyz"
     for (i in str.indices) {
-        e = letters.indexOf(str[i].toString())
-        decNS += if (e != -1) {
-            (e + 10) * baseD.pow(str.length - 1 - i).toInt()
-        } else {
-            (str[i].toInt() - '0'.toInt()) * baseD.pow(str.length - 1 - i).toInt()
-        }
+        decNS += (letters.indexOf(str[i].toString())) *
+                baseD.pow(str.length - 1 - i).toInt()
     }
     return decNS
 }
@@ -347,7 +323,7 @@ fun decimalFromString(str: String, base: Int): Int {
  */
 fun roman(n: Int): String {
     var number = n
-    var str = ""
+    var str = buildString {}
     while (number > 0) {
         when {
             number >= 1000 -> {
@@ -434,7 +410,7 @@ fun russian(n: Int): String {
         "семьсот ", "восемьсот ", "девятьсот "
     )
     var numbr = n
-    val strind: MutableList<String> = mutableListOf()
+    val strind = mutableListOf<String>()
     val wer = arrayOf(numbers, dozens, hundreds)
     while (numbr != 0) {
         if (numbr % 100 < 20) {
@@ -448,26 +424,25 @@ fun russian(n: Int): String {
                 numbr /= 10
             }
         }
-        if (numbr != 0) {
-            if (numbr % 100 !in 5..19) {
-                when (numbr % 10) {
-                    1 -> {
-                        strind.add("тысяча ")
-                        numbers[1] = "одна "
-                    }
-                    2 -> {
-                        strind.add("тысячи ")
-                        numbers[2] = "две "
-                    }
-                    in 3..4 -> strind.add("тысячи ")
-                    else -> strind.add("тысяч ")
-                }
-            } else strind.add("тысяч ")
+        if (numbr == 0) break
+        if (numbr % 100 in 5..19) {
+            strind.add("тысяч ")
+            continue
+        }
+        when (numbr % 10) {
+            1 -> {
+                strind.add("тысяча ")
+                numbers[1] = "одна "
+            }
+            2 -> {
+                strind.add("тысячи ")
+                numbers[2] = "две "
+            }
+            3, 4 -> strind.add("тысячи ")
+            else -> strind.add("тысяч ")
         }
     }
-    var rus = ""
-    for (i in strind.size - 1 downTo 0) {
-        rus += strind[i]
-    }
+    val str = strind.reversed()
+    val rus = str.joinToString(separator = "")
     return rus.trim()
 }
