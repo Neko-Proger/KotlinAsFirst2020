@@ -159,6 +159,7 @@ fun center(list: MutableList<Double>): MutableList<Double> {
  * C = a1b1 + a2b2 + ... + aNbN. Произведение пустых векторов считать равным 0.
  */
 fun times(a: List<Int>, b: List<Int>) = a.zip(b) { a, b -> a * b }.sum()
+
 /**
  * Средняя (3 балла)
  *
@@ -259,15 +260,15 @@ fun convert(n: Int, base: Int): List<Int> {
 fun convertToString(n: Int, base: Int): String {
     val list = convert(n, base)
     val letters = "abcdefghijklmnopqrstuvwxyz"
-    val str = StringBuilder()
-    for (e in list) {
-        if (e < 10) {
-            str.append("$e")
-            continue
+    return buildString {
+        for (e in list) {
+            if (e < 10) {
+                append("$e")
+                continue
+            }
+            append(letters[e - 10])
         }
-        str.append(letters[e - 10])
     }
-    return str.toString()
 }
 
 /**
@@ -319,64 +320,65 @@ fun decimalFromString(str: String, base: Int): Int {
  */
 fun roman(n: Int): String {
     var number = n
-    val str = StringBuilder()
-    while (number > 0) {
-        when {
-            number >= 1000 -> {
-                str.append("M")
-                number -= 1000
-            }
-            number >= 900 -> {
-                str.append("CM")
-                number -= 900
-            }
-            number >= 500 -> {
-                str.append("D")
-                number -= 500
-            }
-            number >= 400 -> {
-                str.append("CD")
-                number -= 400
-            }
-            number >= 100 -> {
-                str.append("C")
-                number -= 100
-            }
-            number >= 90 -> {
-                str.append("XC")
-                number -= 90
-            }
-            number >= 50 -> {
-                str.append("L")
-                number -= 50
-            }
-            number >= 40 -> {
-                str.append("XL")
-                number -= 40
-            }
-            number >= 10 -> {
-                str.append("X")
-                number -= 10
-            }
-            number >= 9 -> {
-                str.append("IX")
-                number -= 9
-            }
-            number >= 5 -> {
-                str.append("V")
-                number -= 5
-            }
-            number >= 4 -> {
-                str.append("IV")
-                number -= 4
-            }
-            number >= 1 -> {
-                str.append("I")
-                number -= 1
+
+    return buildString {
+        while (number > 0) {
+            when {
+                number >= 1000 -> {
+                    append("M")
+                    number -= 1000
+                }
+                number >= 900 -> {
+                    append("CM")
+                    number -= 900
+                }
+                number >= 500 -> {
+                    append("D")
+                    number -= 500
+                }
+                number >= 400 -> {
+                    append("CD")
+                    number -= 400
+                }
+                number >= 100 -> {
+                    append("C")
+                    number -= 100
+                }
+                number >= 90 -> {
+                    append("XC")
+                    number -= 90
+                }
+                number >= 50 -> {
+                    append("L")
+                    number -= 50
+                }
+                number >= 40 -> {
+                    append("XL")
+                    number -= 40
+                }
+                number >= 10 -> {
+                    append("X")
+                    number -= 10
+                }
+                number >= 9 -> {
+                    append("IX")
+                    number -= 9
+                }
+                number >= 5 -> {
+                    append("V")
+                    number -= 5
+                }
+                number >= 4 -> {
+                    append("IV")
+                    number -= 4
+                }
+                number >= 1 -> {
+                    append("I")
+                    number -= 1
+                }
             }
         }
     }
-    return str.toString()
 }
 
 /**

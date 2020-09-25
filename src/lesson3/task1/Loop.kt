@@ -131,6 +131,7 @@ fun minDivisor(n: Int): Int {
  * Для заданного числа n > 1 найти максимальный делитель, меньший n
  */
 fun maxDivisor(n: Int) = n / minDivisor(n)
+
 /**
  * Простая (2 балла)
  *
