@@ -144,9 +144,8 @@ fun mean(list: List<Double>): Double = if (list.isEmpty()) 0.0 else list.sum() /
  * Обратите внимание, что данная функция должна изменять содержание списка list, а не его копии.
  */
 fun center(list: MutableList<Double>): MutableList<Double> {
-    val average = list.average()
     for (i in list.indices) {
-        list[i] -= average
+        list[i] -= list.average()
     }
     return list
 }
@@ -158,11 +157,7 @@ fun center(list: MutableList<Double>): MutableList<Double> {
  * представленные в виде списков a и b. Скалярное произведение считать по формуле:
  * C = a1b1 + a2b2 + ... + aNbN. Произведение пустых векторов считать равным 0.
  */
-fun times(a: List<Int>, b: List<Int>): Int {
-    val c = a.zip(b) { a, b -> a * b }
-    return c.sum()
-}
-
+fun times(a: List<Int>, b: List<Int>) = a.zip(b) { a, b -> a * b }.sum()
 /**
  * Средняя (3 балла)
  *
@@ -263,15 +258,15 @@ fun convert(n: Int, base: Int): List<Int> {
 fun convertToString(n: Int, base: Int): String {
     val list = convert(n, base)
     val letters = "abcdefghijklmnopqrstuvwxyz"
-    var str = buildString {}
+    val str = StringBuilder()
     for (e in list) {
         if (e < 10) {
-            str += "$e"
+            str.append("$e")
             continue
         }
-        str += letters[e - 10]
+        str.append(letters[e - 10])
     }
-    return str
+    return str.toString()
 }
 
 /**
@@ -307,7 +302,7 @@ fun decimalFromString(str: String, base: Int): Int {
     val baseD = base.toDouble()
     val letters = "0123456789abcdefghijklmnopqrstuvwxyz"
     for (i in str.indices) {
-        decNS += (letters.indexOf(str[i].toString())) *
+        decNS += letters.indexOf(str[i].toString()) *
                 baseD.pow(str.length - 1 - i).toInt()
     }
     return decNS
@@ -323,64 +318,64 @@ fun decimalFromString(str: String, base: Int): Int {
  */
 fun roman(n: Int): String {
     var number = n
-    var str = buildString {}
+    val str = StringBuilder()
     while (number > 0) {
         when {
             number >= 1000 -> {
-                str += "M"
+                str.append("M")
                 number -= 1000
             }
             number >= 900 -> {
-                str += "CM"
+                str.append("CM")
                 number -= 900
             }
             number >= 500 -> {
-                str += "D"
+                str.append("D")
                 number -= 500
             }
             number >= 400 -> {
-                str += "CD"
+                str.append("CD")
                 number -= 400
             }
             number >= 100 -> {
-                str += "C"
+                str.append("C")
                 number -= 100
             }
             number >= 90 -> {
-                str += "XC"
+                str.append("XC")
                 number -= 90
             }
             number >= 50 -> {
-                str += "L"
+                str.append("L")
                 number -= 50
             }
             number >= 40 -> {
-                str += "XL"
+                str.append("XL")
                 number -= 40
             }
             number >= 10 -> {
-                str += "X"
+                str.append("X")
                 number -= 10
             }
             number >= 9 -> {
-                str += "IX"
+                str.append("IX")
                 number -= 9
             }
             number >= 5 -> {
-                str += "V"
+                str.append("V")
                 number -= 5
             }
             number >= 4 -> {
-                str += "IV"
+                str.append("IV")
                 number -= 4
             }
             number >= 1 -> {
-                str += "I"
+                str.append("I")
                 number -= 1
             }
         }
     }
-    return str
+    return str.toString()
 }
 
 /**
@@ -442,7 +437,5 @@ fun russian(n: Int): String {
             else -> strind.add("тысяч ")
         }
     }
-    val str = strind.reversed()
-    val rus = str.joinToString(separator = "")
-    return rus.trim()
+    return strind.reversed().joinToString(separator = "").trim()
 }
