@@ -263,7 +263,7 @@ fun convertToString(n: Int, base: Int): String {
     return buildString {
         for (e in list) {
             if (e < 10) {
-                append("$e")
+                append(e)
                 continue
             }
             append(letters[e - 10])
@@ -320,7 +320,6 @@ fun decimalFromString(str: String, base: Int): Int {
  */
 fun roman(n: Int): String {
     var number = n
-
     return buildString {
         while (number > 0) {
             when {
