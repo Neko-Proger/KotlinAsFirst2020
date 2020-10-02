@@ -1,6 +1,9 @@
 @file:Suppress("UNUSED_PARAMETER", "ConvertCallChainIntoSequence")
 
 package lesson5.task1
+
+import ru.spbstu.wheels.toMap
+
 // Урок 5: ассоциативные массивы и множества
 // Максимальное количество баллов = 14
 // Рекомендуемое количество баллов = 9
@@ -259,8 +262,9 @@ fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): S
  *   canBuildFrom(listOf('a', 'b', 'o'), "baobab") -> true
  */
 fun canBuildFrom(chars: List<Char>, word: String): Boolean {
+    val char = chars.toString().toLowerCase()
     for (i in word) {
-        if (i.toUpperCase() !in chars) return false
+        if (i.toLowerCase() !in char) return false
     }
     return true
 }
@@ -304,7 +308,7 @@ fun extractRepeats(list: List<String>): Map<String, Int> {
  *   hasAnagrams(listOf("тор", "свет", "рот")) -> true
  */
 fun hasAnagrams(words: List<String>): Boolean {
-    for (i in words.indices - 1) {
+    for (i in 0 until words.size) {
         for (i1 in i + 1 until words.size) {
             if (words[i].length != words[i1].length) continue
             val str1 = words[i].toList().sorted()
@@ -372,8 +376,9 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
     val li = list.sorted()
     for (i in li) {
         if (i > number) break
-        if (number - i in li && li.indexOf(i) != li.indexOf(number - i))
-            return Pair(li.indexOf(i), li.indexOf(number - i))
+        for (i1 in i + 1 until li.size) {
+            if (i + li[i1] == number) return Pair(li.indexOf(i), i1)
+        }
     }
     return Pair(-1, -1)
 }
@@ -399,46 +404,11 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
  *     450
  *   ) -> emptySet()
  */
-fun sortMap(map: Map<String, Pair<Int, Int>>): Map<String, Pair<Int, Int>> {
-    val map1 = mutableMapOf<String, Pair<Int, Int>>()
-    val nameList = mutableListOf<String>()
-    val weightList = mutableListOf<Int>()
-    val priceList = mutableListOf<Int>()
-    for ((str, i) in map) {
-        val (weight, price) = i
-        nameList.add(str)
-        weightList.add(weight)
-        priceList.add(price)
-    }
-    var interName: String
-    var interWeight: Int
-    var interPrice: Int
-    for (i in 0 until nameList.size) {
-        for (i2 in 0 until nameList.size - i) {
-            if (weightList[i] > weightList[i2] || priceList[i] > priceList[i2]) {
-                interName = nameList[i]
-                interWeight = weightList[i]
-                interPrice = priceList[i]
-                nameList[i] = nameList[i2]
-                weightList[i] = weightList[i2]
-                priceList[i] = priceList[i2]
-                nameList[i2] = interName
-                weightList[i2] = interWeight
-                priceList[i2] = interPrice
-            }
-
-        }
-    }
-    var index = 0
-    for (i in nameList) {
-        map1[i] = Pair(weightList[index], priceList[index])
-        index += 1
-    }
-    return map1
-}
 
 fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> {
-    val map = sortMap(treasures)
+    val map = treasures
+        .entries
+        .sortedBy { (_, value) -> value.second }.reversed().toMap()
     val sumSet = mutableSetOf<String>()
     var sum = 0
     var interSum = 0
