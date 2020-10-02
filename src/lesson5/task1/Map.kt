@@ -98,7 +98,6 @@ fun buildWordSet(text: List<String>): MutableSet<String> {
 fun buildGrades(grades: Map<String, Int>): Map<Int, List<String>> {
     val mutableMap = mutableMapOf<Int, MutableList<String>>()
     for ((name, appraisal) in grades) {
-        if (name.isEmpty()) continue
         if (appraisal !in mutableMap) {
             mutableMap[appraisal] = mutableListOf()
         }
@@ -261,7 +260,7 @@ fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): S
  */
 fun canBuildFrom(chars: List<Char>, word: String): Boolean {
     for (i in word) {
-        if (i.toLowerCase() !in chars) return false
+        if (i.toUpperCase() !in chars) return false
     }
     return true
 }
@@ -307,7 +306,7 @@ fun extractRepeats(list: List<String>): Map<String, Int> {
 fun hasAnagrams(words: List<String>): Boolean {
     for (i in words.indices - 1) {
         for (i1 in i + 1 until words.size) {
-            if (words[i].length != words[i1].length || words[i1].length < 2) continue
+            if (words[i].length != words[i1].length) continue
             val str1 = words[i].toList().sorted()
             val str2 = words[i1].toList().sorted()
             if (str1 == str2) return true
@@ -371,16 +370,11 @@ fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<Stri
  */
 fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
     val li = list.sorted()
-    for (i in li.indices) {
+    for (i in li) {
         if (i > number) break
-        for (i2 in i until li.size) {
-            when {
-                i + li[i2] > number -> break
-                i + li[i2] == number -> return Pair(li.indexOf(i), i2)
-            }
-        }
+        if (number - i in li && li.indexOf(i) != li.indexOf(number - i))
+            return Pair(li.indexOf(i), li.indexOf(number - i))
     }
-
     return Pair(-1, -1)
 }
 
@@ -450,8 +444,8 @@ fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<Strin
     var interSum = 0
     for ((str, par) in map) {
         val (weight, price) = par
-        if (weight >= capacity) continue
-        if (interSum + weight >= capacity) break
+        if (weight > capacity) continue
+        if (interSum + weight > capacity) break
         sum += price
         interSum += weight
         sumSet.add(str)
