@@ -262,7 +262,7 @@ fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): S
  *   canBuildFrom(listOf('a', 'b', 'o'), "baobab") -> true
  */
 fun canBuildFrom(chars: List<Char>, word: String): Boolean {
-    val char = chars.toString().toLowerCase()
+    val char = chars.joinToString(separator = "", postfix = "").toLowerCase().toList()
     for (i in word) {
         if (i.toLowerCase() !in char) return false
     }
@@ -376,7 +376,7 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
     for (i in list) {
         if (i > number) break
         for (i1 in i + 1 until list.size) {
-            if (i + list[i1] == number) return Pair(list.indexOf(i), i1)
+            if (i + list[i1] == number && ((i != 0 && i1 != 0) || number == 0)) return Pair(list.indexOf(i), i1)
         }
     }
     return Pair(-1, -1)
@@ -411,33 +411,54 @@ fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<Strin
     val sumSet = mutableSetOf<String>()
     var sum = 0
     var interSum = 0
-    var interWeight = 0
+    var interWeight = -1
     val interMap = mutableMapOf<String, Pair<Int, Int>>()
     val interMap1 = mutableMapOf<String, Pair<Int, Int>>()
     for ((str, par) in map) {
         val (weight, price) = par
-        if (price != interWeight) {
-            interWeight = price
-            if (interMap.isNotEmpty()) {
-                val w = interMap
+        if (price == interWeight) {
+            interMap1[str] = par
+        } else {
+            if (interWeight != -1) {
+                val w = interMap1
                     .entries
                     .sortedBy { (_, value) -> value.first }.toMap()
-                interMap1 += w
-                interMap.clear()
-                interMap[str] = par
-                continue
+                interMap += w
+                interMap1.clear()
             }
+            interWeight = price
+            interMap1[str] = par
         }
-        interMap[str] = par
     }
-    val w = interMap
+    var w = interMap1
         .entries
         .sortedBy { (_, value) -> value.first }.toMap()
+    interMap += w
+    interMap1.clear()
+    var inter = -1
+    interWeight = -1
+    val interMap2 = mutableMapOf<String, Pair<Int, Int>>()
+    for ((str, par) in interMap) {
+        val (weight, price) = par
+        if (price == interWeight && inter == weight) {
+            interMap2[str] = par
+        } else {
+            if (interWeight != -1) {
+                val w = interMap2.toSortedMap()
+                interMap1 += w
+                interMap2.clear()
+            }
+            interWeight = price
+            inter = weight
+            interMap2[str] = par
+        }
+    }
+    w = interMap2.toSortedMap()
     interMap1 += w
     for ((str, par) in interMap1) {
         val (weight, price) = par
         if (weight > capacity) continue
-        if (interSum + weight > capacity) break
+        if (interSum + weight > capacity) continue
         sum += price
         interSum += weight
         sumSet.add(str)
