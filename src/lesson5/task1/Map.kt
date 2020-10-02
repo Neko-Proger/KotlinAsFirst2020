@@ -373,11 +373,10 @@ fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<Stri
  *   findSumOfTwo(listOf(1, 2, 3), 6) -> Pair(-1, -1)
  */
 fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
-    val li = list.sorted()
-    for (i in li) {
+    for (i in list) {
         if (i > number) break
-        for (i1 in i + 1 until li.size) {
-            if (i + li[i1] == number) return Pair(li.indexOf(i), i1)
+        for (i1 in i + 1 until list.size) {
+            if (i + list[i1] == number) return Pair(list.indexOf(i), i1)
         }
     }
     return Pair(-1, -1)
@@ -412,7 +411,30 @@ fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<Strin
     val sumSet = mutableSetOf<String>()
     var sum = 0
     var interSum = 0
+    var interWeight = 0
+    val interMap = mutableMapOf<String, Pair<Int, Int>>()
+    val interMap1 = mutableMapOf<String, Pair<Int, Int>>()
     for ((str, par) in map) {
+        val (weight, price) = par
+        if (price != interWeight) {
+            interWeight = price
+            if (interMap.isNotEmpty()) {
+                val w = interMap
+                    .entries
+                    .sortedBy { (_, value) -> value.first }.toMap()
+                interMap1 += w
+                interMap.clear()
+                interMap[str] = par
+                continue
+            }
+        }
+        interMap[str] = par
+    }
+    val w = interMap
+        .entries
+        .sortedBy { (_, value) -> value.first }.toMap()
+    interMap1 += w
+    for ((str, par) in interMap1) {
         val (weight, price) = par
         if (weight > capacity) continue
         if (interSum + weight > capacity) break
