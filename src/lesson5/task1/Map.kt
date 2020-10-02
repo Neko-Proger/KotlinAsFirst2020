@@ -15,7 +15,7 @@ package lesson5.task1
  */
 fun shoppingListCost(
     shoppingList: List<String>,
-    costs: Map<String, Double>
+    costs: Map<String, Double>,
 ): Double {
     var totalCost = 0.0
 
@@ -37,7 +37,7 @@ fun shoppingListCost(
  */
 fun filterByCountryCode(
     phoneBook: MutableMap<String, String>,
-    countryCode: String
+    countryCode: String,
 ) {
     val namesToRemove = mutableListOf<String>()
 
@@ -60,7 +60,7 @@ fun filterByCountryCode(
  */
 fun removeFillerWords(
     text: List<String>,
-    vararg fillerWords: String
+    vararg fillerWords: String,
 ): List<String> {
     val fillerWordSet = setOf(*fillerWords)
 
@@ -96,18 +96,14 @@ fun buildWordSet(text: List<String>): MutableSet<String> {
  *     -> mapOf(5 to listOf("Семён", "Михаил"), 3 to listOf("Марат"))
  */
 fun buildGrades(grades: Map<String, Int>): Map<Int, List<String>> {
-    val array = arrayOf<MutableList<String>>(
-        mutableListOf(),
-        mutableListOf(), mutableListOf(), mutableListOf()
-    )
+    val mutableMap = mutableMapOf<Int, MutableList<String>>()
     for ((name, appraisal) in grades) {
-        if (appraisal != 0) {
-            array[appraisal - 2].add(name)
+        if (name.isEmpty()) continue
+        if (appraisal !in mutableMap) {
+            mutableMap[appraisal] = mutableListOf()
         }
-    }
-    val mutableMap = mutableMapOf<Int, List<String>>()
-    for (i in 3 downTo 0) {
-        if (array[i].isNotEmpty()) mutableMap[i + 2] = array[i]
+        val e = mutableMap[appraisal]!!
+        e.add(name)
     }
     return mutableMap
 }
@@ -145,7 +141,7 @@ fun containsIn(a: Map<String, String>, b: Map<String, String>): Boolean {
  */
 fun subtractOf(a: MutableMap<String, String>, b: Map<String, String>): MutableMap<String, String> {
     for ((key, value) in b) {
-        if (b[key] == value) a.remove(key)
+        if (value == a[key]) a.remove(key)
     }
     return a
 }
@@ -158,11 +154,11 @@ fun subtractOf(a: MutableMap<String, String>, b: Map<String, String>): MutableMa
  * т. е. whoAreInBoth(listOf("Марат", "Семён, "Марат"), listOf("Марат", "Марат")) == listOf("Марат")
  */
 fun whoAreInBoth(a: List<String>, b: List<String>): List<String> {
-    val mutableC = mutableListOf<String>()
+    val mutableC = mutableSetOf<String>()
     for (i in a) {
-        if (mutableC.indexOf(i) == -1 && i in b) mutableC.add(i)
+        if (i !in mutableC && i in b) mutableC.add(i)
     }
-    return mutableC
+    return mutableC.toList()
 }
 
 /**
@@ -189,7 +185,7 @@ fun mergePhoneBooks(mapA: Map<String, String>, mapB: Map<String, String>): Map<S
             phoneBook[key] = "${mapA[key]}, $value"
             continue
         }
-        phoneBook[key] = mapB[key]!!
+        if (mapB[key] != null) phoneBook[key] = mapB[key].toString()
     }
     return phoneBook
 }
@@ -204,22 +200,24 @@ fun mergePhoneBooks(mapA: Map<String, String>, mapB: Map<String, String>): Map<S
  *   averageStockPrice(listOf("MSFT" to 100.0, "MSFT" to 200.0, "NFLX" to 40.0))
  *     -> mapOf("MSFT" to 150.0, "NFLX" to 40.0)
  */
-//среднее значение вычисляется только для двух элементов исправить
 fun averageStockPrice(stockPrices: List<Pair<String, Double>>): Map<String, Double> {
-    val stockMap = mutableMapOf<String, Int>()
+    val averageString = mutableListOf<String>()
+    val averageDouble = mutableListOf<Double>()
+    val averageIndex = mutableListOf<Double>()
     val averageCost = mutableMapOf<String, Double>()
     for ((stock, price) in stockPrices) {
-        if (stock !in stockMap && stock in averageCost) stockMap[stock] = 1
-        if (stock in stockMap && stock in averageCost) stockMap[stock] =
-            stockMap[stock]!! + 1
-        if (averageCost[stock] != null) {
-            averageCost[stock] = averageCost[stock]!! + price
-            continue
+        if (stock !in averageString) {
+            averageString.add(stock)
+            averageDouble.add(price)
+            averageIndex.add(1.0)
+        } else {
+            averageDouble[averageString.indexOf(stock)] += price
+            averageIndex[averageString.indexOf(stock)] += 1.0
         }
-        averageCost[stock] = price
     }
-    for ((stock, price) in averageCost) {
-        if (stock in stockMap) averageCost[stock] = price / stockMap[stock]!!
+    for (i in averageString.indices) {
+        if (averageIndex[i] > 1.0) averageDouble[i] /= averageIndex[i]
+        averageCost[averageString[i]] = averageDouble[i]
     }
     return averageCost
 }
@@ -241,7 +239,7 @@ fun averageStockPrice(stockPrices: List<Pair<String, Double>>): Map<String, Doub
  */
 fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): String? {
     var min = Double.POSITIVE_INFINITY
-    var product = null.toString()
+    var product: String? = null
     for ((name, couple) in stuff) {
         val (view, price) = couple
         if ((price < min || min == -1.0) && view == kind) {
@@ -249,7 +247,6 @@ fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): S
             product = name
         }
     }
-    if (product == null.toString()) return null
     return product
 }
 
@@ -311,8 +308,8 @@ fun hasAnagrams(words: List<String>): Boolean {
     for (i in words.indices - 1) {
         for (i1 in i + 1 until words.size) {
             if (words[i].length != words[i1].length || words[i1].length < 2) continue
-            val str1 = words[i].toCharArray().toList().sorted().joinToString()
-            val str2 = words[i1].toCharArray().toList().sorted().joinToString()
+            val str1 = words[i].toList().sorted()
+            val str2 = words[i1].toList().sorted()
             if (str1 == str2) return true
         }
     }
