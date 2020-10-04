@@ -2,8 +2,6 @@
 
 package lesson5.task1
 
-import ru.spbstu.wheels.toMap
-
 // Урок 5: ассоциативные массивы и множества
 // Максимальное количество баллов = 14
 // Рекомендуемое количество баллов = 9
@@ -376,7 +374,7 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
     for (i in list) {
         if (i > number) break
         for (i1 in i + 1 until list.size) {
-            if (i + list[i1] == number && ((i != 0 && i1 != 0) || number == 0)) return Pair(list.indexOf(i), i1)
+            if (i + list[i1] == number && (i != 0 || number == 0)) return Pair(list.indexOf(i), i1)
         }
     }
     return Pair(-1, -1)
@@ -403,65 +401,122 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
  *     450
  *   ) -> emptySet()
  */
+fun bag(
+    max: Int,
+    weight: List<Int>,
+    name: List<String>,
+    price: List<Int>,
+    arr: Int,
+    maxE: Int, //максимальный элемент
+    capacity: Int,
+    maxWeight: Int,
+): List<Any?> {
+    var interPrice = 0
+    var interWeight = 0
+    val nameMax = mutableListOf<String>()
+    val interName = mutableListOf<String>()
+    val r = mutableListOf<Int>()
+    val d = mutableListOf<Int>()
+    var maximum = max
+    var maximumWeight = maxWeight
+    for (i in 0 until arr) {
+        r.add(maxE - i)
+        d.add(maxE - i)
+    }
+    lim@ while (d[0] != d[1]) {
+        for (i in 0 until arr) {
+            interPrice += price[d[i]]
+            interWeight += weight[d[i]]
+            interName.add(name[d[i]])
+        }
+        if (maximum <= interPrice && capacity >= interWeight && maximumWeight >= interWeight) {
+            nameMax.clear()
+            for (i in interName) {
+                nameMax.add(i)
+            }
+            maximum = interPrice
+            maximumWeight = interWeight
+        }
+        interPrice = 0
+        interWeight = 0
+        interName.clear()
+        for (i in r.size - 1 downTo 0) {
+            when (i) {
+                r.size - 1 -> {
+                    if (d[i] - 1 > -1) {
+                        d[i] -= 1
+                        break
+                    } else {
+                        if (d[i - 1] - 1 != d[i]) {
+                            d[i] = d[i - 1] - 2
+                        } else d[i] = d[i - 1] - 1
+                    }
+                }
+                0 -> {
+                    if (d[i] - 1 > d[i + 1]) d[i] -= 1
+                    else break@lim
+                }
+                else -> {
+                    if (d[i] - 1 > d[i + 1]) {
+                        d[i] -= 1
+                        break
+                    } else {
+                        if (d[i - 1] - 1 != d[i]) {
+                            d[i] = d[i - 1] - 2
+                        } else d[i] = d[i - 1] - 1
+                    }
+                }
+            }
+        }
+    }
+    val str = nameMax.joinToString(separator = " ", postfix = " ")
+    return listOf(maximum, str, maximumWeight)
+}
 
 fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> {
-    val map = treasures
-        .entries
-        .sortedBy { (_, value) -> value.second }.reversed().toMap()
-    val sumSet = mutableSetOf<String>()
-    var sum = 0
-    var interSum = 0
-    var interWeight = -1
-    val interMap = mutableMapOf<String, Pair<Int, Int>>()
-    val interMap1 = mutableMapOf<String, Pair<Int, Int>>()
-    for ((str, par) in map) {
-        val (weight, price) = par
-        if (price == interWeight) {
-            interMap1[str] = par
-        } else {
-            if (interWeight != -1) {
-                val w = interMap1
-                    .entries
-                    .sortedBy { (_, value) -> value.first }.toMap()
-                interMap += w
-                interMap1.clear()
-            }
-            interWeight = price
-            interMap1[str] = par
+    val weight = mutableListOf<Int>()
+    val price = mutableListOf<Int>()
+    val name = mutableListOf<String>()
+    for ((nam, priceWeight) in treasures) {
+        name.add(nam)
+        val (paraWeight, paraPrice) = priceWeight
+        price.add(paraPrice)
+        weight.add(paraWeight)
+    }
+    var max = 0
+    var minWeight = Int.MAX_VALUE
+    var nameMaximum = ""
+    for (i in price.size downTo 2) {
+        val inter = bag(max, weight, name, price, i, price.size - 1, capacity, minWeight)
+        val maxw = inter[0].toString().toInt()
+        val maxName = inter[1].toString()
+        val minWei = inter[2].toString().toInt()
+        if (maxw >= max && minWeight >= minWei) {
+            max = maxw
+            nameMaximum = maxName
+            minWeight = minWei
         }
     }
-    var w = interMap1
-        .entries
-        .sortedBy { (_, value) -> value.first }.toMap()
-    interMap += w
-    interMap1.clear()
-    var inter = -1
-    interWeight = -1
-    val interMap2 = mutableMapOf<String, Pair<Int, Int>>()
-    for ((str, par) in interMap) {
-        val (weight, price) = par
-        if (price == interWeight && inter == weight) {
-            interMap2[str] = par
-        } else {
-            if (interWeight != -1) {
-                val w = interMap2.toSortedMap()
-                interMap1 += w
-                interMap2.clear()
-            }
-            interWeight = price
-            inter = weight
-            interMap2[str] = par
+    for (i in price.size - 1 downTo 0) {
+        if (price[i] >= max && weight[i] <= capacity) {
+            max = price[i]
+            nameMaximum = name[i]
         }
     }
-    w = interMap2.toSortedMap()
-    interMap1 += w
-    for ((str, par) in interMap1) {
-        val (weight, price) = par
-        if (weight > capacity) continue
-        if (interSum + weight > capacity) continue
-        sum += price
-        interSum += weight
-        sumSet.add(str)
+    if (weight.sum() <= capacity) {
+        nameMaximum = name.joinToString(separator = " ", postfix = "")
     }
-    return sumSet
+    if (nameMaximum == " ") return emptySet()
+    if (" " !in nameMaximum) return setOf(nameMaximum)
+    val nameToList = nameMaximum.toList()
+    val nameSet = mutableSetOf<String>()
+    var terem = ""
+    for (i in nameToList) {
+        if (i.toString() != " ") terem += i.toString()
+        else {
+            nameSet.add(terem.toString())
+            terem = ""
+        }
+    }
+    return nameSet
 }
