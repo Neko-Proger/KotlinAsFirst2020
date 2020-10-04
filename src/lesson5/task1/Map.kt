@@ -442,7 +442,7 @@ fun bag(
             reductionWeight = interPrice
             indexPrice = 0
         } else if ((reductionWeight != 0 && reductionWeight > interPrice) || max != 0) {
-            if (indexPrice < maxE * 2) indexPrice += 1
+            if (indexPrice < maxE * arr) indexPrice += 1
             else break@lim
         }
         interPrice = 0
