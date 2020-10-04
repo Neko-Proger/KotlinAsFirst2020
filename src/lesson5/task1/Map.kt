@@ -428,7 +428,7 @@ fun bag(
             interWeight += weight[d[i]]
             interName.add(name[d[i]])
         }
-        if (maximum <= interPrice && capacity >= interWeight && maximumWeight >= interWeight) {
+        if (capacity >= interWeight && maximum <= interPrice) { //|
             nameMax.clear()
             for (i in interName) {
                 nameMax.add(i)
@@ -494,7 +494,7 @@ fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<Strin
         val maxName = inter[1].toString()
         val minWei = inter[2].toString().toInt()
         if (maxName == " ") break
-        if (maxw >= max && minWeight >= minWei) {
+        if (maxw >= max && (minWeight >= minWei || capacity >= minWei)) {
             max = maxw
             nameMaximum = maxName
             minWeight = minWei
