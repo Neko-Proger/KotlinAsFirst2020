@@ -500,12 +500,10 @@ fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<Strin
             minWeight = minWei
         }
     }
-    if (nameMaximum == "") {
-        for (i in price.size - 1 downTo 0) {
-            if (price[i] >= max && weight[i] <= capacity) {
-                max = price[i]
-                nameMaximum = name[i]
-            }
+    for (i in price.size - 1 downTo 0) {
+        if (price[i] >= max && weight[i] <= capacity) {
+            max = price[i]
+            nameMaximum = name[i]
         }
     }
     if (nameMaximum.trim() == "") return emptySet()
