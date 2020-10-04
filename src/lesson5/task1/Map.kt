@@ -2,6 +2,8 @@
 
 package lesson5.task1
 
+import ru.spbstu.wheels.toMap
+
 // Урок 5: ассоциативные массивы и множества
 // Максимальное количество баллов = 14
 // Рекомендуемое количество баллов = 9
@@ -371,10 +373,9 @@ fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<Stri
  *   findSumOfTwo(listOf(1, 2, 3), 6) -> Pair(-1, -1)
  */
 fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
-    for (i in list) {
-        if (i > number) break
+    for (i in 0 until list.size - 1) {
         for (i1 in i + 1 until list.size) {
-            if (i + list[i1] == number && (i != 0 || number == 0)) return Pair(list.indexOf(i), i1)
+            if (list[i] + list[i1] == number) return Pair(i, i1)
         }
     }
     return Pair(-1, -1)
@@ -474,10 +475,13 @@ fun bag(
 }
 
 fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> {
+    val map = treasures
+        .entries
+        .sortedBy { (_, value) -> value.second }.toMap()
     val weight = mutableListOf<Int>()
     val price = mutableListOf<Int>()
     val name = mutableListOf<String>()
-    for ((nam, priceWeight) in treasures) {
+    for ((nam, priceWeight) in map) {
         name.add(nam)
         val (paraWeight, paraPrice) = priceWeight
         price.add(paraPrice)
@@ -486,27 +490,30 @@ fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<Strin
     var max = 0
     var minWeight = Int.MAX_VALUE
     var nameMaximum = ""
-    for (i in price.size downTo 2) {
+    for (i in 2..price.size) {
         val inter = bag(max, weight, name, price, i, price.size - 1, capacity, minWeight)
         val maxw = inter[0].toString().toInt()
         val maxName = inter[1].toString()
         val minWei = inter[2].toString().toInt()
+        if (maxName == " ") break
         if (maxw >= max && minWeight >= minWei) {
             max = maxw
             nameMaximum = maxName
             minWeight = minWei
         }
     }
-    for (i in price.size - 1 downTo 0) {
-        if (price[i] >= max && weight[i] <= capacity) {
-            max = price[i]
-            nameMaximum = name[i]
+    if (nameMaximum == "") {
+        for (i in price.size - 1 downTo 0) {
+            if (price[i] >= max && weight[i] <= capacity) {
+                max = price[i]
+                nameMaximum = name[i]
+            }
         }
     }
     if (weight.sum() <= capacity) {
         nameMaximum = name.joinToString(separator = " ", postfix = "")
     }
-    if (nameMaximum == " ") return emptySet()
+    if (nameMaximum.trim() == "") return emptySet()
     if (" " !in nameMaximum) return setOf(nameMaximum)
     val nameToList = nameMaximum.toList()
     val nameSet = mutableSetOf<String>()
