@@ -2,6 +2,8 @@
 
 package lesson5.task1
 
+import ru.spbstu.wheels.toMap
+
 // Урок 5: ассоциативные массивы и множества
 // Максимальное количество баллов = 14
 // Рекомендуемое количество баллов = 9
@@ -417,6 +419,8 @@ fun bag(
     val r = mutableListOf<Int>()
     val d = mutableListOf<Int>()
     var maximum = max
+    var reductionWeight = 0
+    var indexPrice = 0
     var maximumWeight = maxWeight
     for (i in 0 until arr) {
         r.add(maxE - i)
@@ -435,6 +439,11 @@ fun bag(
             }
             maximum = interPrice
             maximumWeight = interWeight
+            reductionWeight = interPrice
+            indexPrice = 0
+        } else if (reductionWeight != 0 && reductionWeight > interPrice) {
+            if (indexPrice < maxE * 2) indexPrice += 1
+            else break@lim
         }
         interPrice = 0
         interWeight = 0
@@ -473,10 +482,13 @@ fun bag(
 }
 
 fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> {
+    val map = treasures
+        .entries
+        .sortedBy { (_, value) -> value.second }.toMap()
     val weight = mutableListOf<Int>()
     val price = mutableListOf<Int>()
     val name = mutableListOf<String>()
-    for ((nam, priceWeight) in treasures) {
+    for ((nam, priceWeight) in map) {
         name.add(nam)
         val (paraWeight, paraPrice) = priceWeight
         price.add(paraPrice)
@@ -514,7 +526,7 @@ fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<Strin
     for (i in nameToList) {
         if (i.toString() != " ") terem += i.toString()
         else {
-            nameSet.add(terem.toString())
+            nameSet.add(terem)
             terem = ""
         }
     }
