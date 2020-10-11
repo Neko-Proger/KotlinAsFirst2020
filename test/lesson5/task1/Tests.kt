@@ -103,10 +103,6 @@ class Tests {
     @Tag("2")
     fun buildGrades() {
         assertEquals(
-            mapOf<Int, List<String>>(1 to listOf()),
-            buildGrades(mapOf("" to 1))
-        )
-        assertEquals(
             mapOf<Int, List<String>>(),
             buildGrades(mapOf())
         )
@@ -347,7 +343,7 @@ class Tests {
     @Test
     @Tag("8")
     fun bagPacking() {
-        assertEquals(
+      assertEquals(
             setOf(
                 "7", "6", "4", "3", "1", "0"
             ),
@@ -423,7 +419,7 @@ class Tests {
                     "1" to (480 to 2),
                     "2" to (1 to 1),
                     "3" to (1 to 1),
-                    "4" to (1 to 1), ),
+                    "4" to (1 to 1) ),
 
                 456
             )
@@ -434,10 +430,10 @@ class Tests {
                 mapOf("0" to (1 to 1),
                     "1" to (1 to 1),
                     "2" to (34 to 1),
-                    "3" to (474 to 1),
+                    "3" to (384 to 1),
                     "4" to (349 to 1),
                     "5" to (289 to 1),
-                    "6" to (384 to 1),
+                    "6" to (600 to 1),
                     "7" to (1 to 1)),
 
                 1525
