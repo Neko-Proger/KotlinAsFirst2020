@@ -104,9 +104,7 @@ fun buildGrades(grades: Map<String, Int>): Map<Int, List<String>> {
         if (appraisal !in mutableMap) {
             mutableMap[appraisal] = mutableListOf()
         }
-        if (name != "") {
             mutableMap[appraisal]!!.add(name)
-        }
     }
     return mutableMap
 }
@@ -374,7 +372,7 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
     for (i in 0 until list.size - 1) {
         if (i !in setI) {
             for (i1 in i + 1 until list.size) {
-                if (i1 !in setI1){
+                if (i1 !in setI1) {
                     if (list[i] + list[i1] == number) return Pair(i, i1)
                     setI1.add(i1)
                 }
@@ -481,49 +479,59 @@ fun bag(
             }
         }
     }
-    val str = nameMax.joinToString(separator = " ", postfix = " ")
+    // val str = nameMax.joinToString(separator = " ", postfix = " ")
+    val str = nameMax.joinToString(separator = " ", postfix = "")
     return listOf(maximum, str, maximumWeight)
 }
-/*fun bagin(
+
+fun bagin(
     max: Int,
+    weightMax: Int,
     weight: List<Int>,
     name: List<String>,
     price: List<Int>,
-    maxE: Int, //максимальный элемент
     capacity: Int,
-    maxWeight: Int,
-): List<Any?>{
+    nameM: String,
+): List<Any?> {
     var interPrice = 0
     var interWeight = 0
-    val nameMax = mutableListOf<String>()
-    val interName = mutableListOf<String>()
-    val r = mutableListOf<Int>()
-    val d = mutableListOf<Int>()
+    var weightM = weightMax
+    var nameMax = nameM
     var maximum = max
-    var reductionWeight = 0
-    var indexPrice = 0
-    var maximumWeight = maxWeight
-    for (i in 0 until name.size) {
-        interPrice += price[d[i]]
-        interWeight += weight[d[i]]
-        interName.add(name[d[i]])
-    }
-    if (capacity >= interWeight && maximum <= interPrice) { //|
-        nameMax.clear()
-        for (i in interName) {
-            nameMax.add(i)
+    var terem = ""
+    val inter = "$nameM "
+    val list = mutableListOf<String>()
+    for (i in inter) {
+        if (i.toString() != " ") terem += i.toString()
+        else {
+            list.add(terem)
+            terem = ""
         }
-        maximum = interPrice
-        maximumWeight = interWeight
-        reductionWeight = interPrice
-
     }
-}*/
+    for (i in name) {
+        if (list.indexOf(i) == -1) {
+            interPrice = max + price[name.indexOf(i)]
+            interWeight = weightMax + weight[name.indexOf(i)]
+            if (maximum < interPrice) {
+                if (capacity >= interWeight) {
+                    nameMax = "$nameM $i"
+                    maximum = interPrice
+                    weightM = interWeight
+                }
+            } else if (maximum == interPrice && (weightM >= interWeight || weightM == weightMax)) {
+                nameMax = "$nameM $i"
+                maximum = interPrice
+                weightM = interWeight
+            }
+
+        }
+    }
+    if (nameMax == nameM) nameMax = ""
+    return listOf(maximum, nameMax, weightM)
+}
 
 fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> {
     val map = treasures
-        .entries
-        .sortedBy { (_, value) -> value.second }.toMap()
     val weight = mutableListOf<Int>()
     val price = mutableListOf<Int>()
     val name = mutableListOf<String>()
@@ -539,14 +547,22 @@ fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<Strin
     if (weight.sum() <= capacity) {
         return name.toSet()
     }
-
-    for (i in 2..price.size) {
-        val inter = bag(max, weight, name, price, i, price.size - 1, capacity, minWeight)
-        val maxw = inter[0].toString().toInt()
-        val maxName = inter[1].toString()
-        val minWei = inter[2].toString().toInt()
-        if (maxName == " ") break
-        if (maxw >= max && (minWeight >= minWei || capacity >= minWei)) {
+    var inter = bag(max, weight, name, price, 2, price.size - 1, capacity, minWeight)
+    var maxw = inter[0].toString().toInt()
+    var maxName = inter[1].toString()
+    var minWei = inter[2].toString().toInt()
+    if (maxName != "") {
+        max = maxw
+        nameMaximum = maxName
+        while (true) {
+            inter = bagin(maxw, minWei, weight, name, price, capacity, maxName)
+            maxw = inter[0].toString().toInt()
+            maxName = inter[1].toString()
+            minWei = inter[2].toString().toInt()
+            if (maxName == "") {
+                nameMaximum += " "
+                break
+            }
             max = maxw
             nameMaximum = maxName
             minWeight = minWei
