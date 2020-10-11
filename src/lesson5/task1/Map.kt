@@ -104,8 +104,9 @@ fun buildGrades(grades: Map<String, Int>): Map<Int, List<String>> {
         if (appraisal !in mutableMap) {
             mutableMap[appraisal] = mutableListOf()
         }
-        val e = mutableMap[appraisal]!!
-        e.add(name)
+        if (name != "") {
+            mutableMap[appraisal]!!.add(name)
+        }
     }
     return mutableMap
 }
@@ -187,7 +188,7 @@ fun mergePhoneBooks(mapA: Map<String, String>, mapB: Map<String, String>): Map<S
             phoneBook[key] = "${mapA[key]}, $value"
             continue
         }
-        if (mapB[key] != null) phoneBook[key] = mapB[key].toString()
+        phoneBook[key] = value
     }
     return phoneBook
 }
@@ -204,22 +205,17 @@ fun mergePhoneBooks(mapA: Map<String, String>, mapB: Map<String, String>): Map<S
  */
 fun averageStockPrice(stockPrices: List<Pair<String, Double>>): Map<String, Double> {
     val averageString = mutableListOf<String>()
-    val averageDouble = mutableListOf<Double>()
-    val averageIndex = mutableListOf<Double>()
+    val averageDouble = mutableListOf<MutableList<Double>>()
     val averageCost = mutableMapOf<String, Double>()
     for ((stock, price) in stockPrices) {
         if (stock !in averageString) {
             averageString.add(stock)
-            averageDouble.add(price)
-            averageIndex.add(1.0)
-        } else {
-            averageDouble[averageString.indexOf(stock)] += price
-            averageIndex[averageString.indexOf(stock)] += 1.0
+            averageDouble.add(mutableListOf())
         }
+        averageDouble[averageString.indexOf(stock)].add(price)
     }
     for (i in averageString.indices) {
-        if (averageIndex[i] > 1.0) averageDouble[i] /= averageIndex[i]
-        averageCost[averageString[i]] = averageDouble[i]
+        averageCost[averageString[i]] = averageDouble[i].average()
     }
     return averageCost
 }
@@ -244,7 +240,7 @@ fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): S
     var product: String? = null
     for ((name, couple) in stuff) {
         val (view, price) = couple
-        if ((price < min || min == -1.0) && view == kind) {
+        if ((price < min) && view == kind) {
             min = price
             product = name
         }
@@ -373,9 +369,18 @@ fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<Stri
  *   findSumOfTwo(listOf(1, 2, 3), 6) -> Pair(-1, -1)
  */
 fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
+    val setI = mutableSetOf<Int>()
+    val setI1 = mutableSetOf<Int>()
     for (i in 0 until list.size - 1) {
-        for (i1 in i + 1 until list.size) {
-            if (list[i] + list[i1] == number) return Pair(i, i1)
+        if (i !in setI) {
+            for (i1 in i + 1 until list.size) {
+                if (i1 !in setI1){
+                    if (list[i] + list[i1] == number) return Pair(i, i1)
+                    setI1.add(i1)
+                }
+            }
+            setI1.clear()
+            setI.add(i)
         }
     }
     return Pair(-1, -1)
@@ -442,7 +447,7 @@ fun bag(
             reductionWeight = interPrice
             indexPrice = 0
         } else if ((reductionWeight != 0 && reductionWeight > interPrice) || max != 0) {
-            if (indexPrice < maxE * arr) indexPrice += 1
+            if (indexPrice < maxE * arr * maxE) indexPrice += 1
             else break@lim
         }
         interPrice = 0
@@ -467,11 +472,10 @@ fun bag(
                 else -> {
                     if (d[i] - 1 > d[i + 1]) {
                         d[i] -= 1
+                        for (en in i + 1 until r.size) {
+                            d[en] = d[en - 1] - 1
+                        }
                         break
-                    } else {
-                        if (d[i - 1] - 1 != d[i]) {
-                            d[i] = d[i - 1] - 2
-                        } else d[i] = d[i - 1] - 1
                     }
                 }
             }
@@ -480,6 +484,41 @@ fun bag(
     val str = nameMax.joinToString(separator = " ", postfix = " ")
     return listOf(maximum, str, maximumWeight)
 }
+/*fun bagin(
+    max: Int,
+    weight: List<Int>,
+    name: List<String>,
+    price: List<Int>,
+    maxE: Int, //максимальный элемент
+    capacity: Int,
+    maxWeight: Int,
+): List<Any?>{
+    var interPrice = 0
+    var interWeight = 0
+    val nameMax = mutableListOf<String>()
+    val interName = mutableListOf<String>()
+    val r = mutableListOf<Int>()
+    val d = mutableListOf<Int>()
+    var maximum = max
+    var reductionWeight = 0
+    var indexPrice = 0
+    var maximumWeight = maxWeight
+    for (i in 0 until name.size) {
+        interPrice += price[d[i]]
+        interWeight += weight[d[i]]
+        interName.add(name[d[i]])
+    }
+    if (capacity >= interWeight && maximum <= interPrice) { //|
+        nameMax.clear()
+        for (i in interName) {
+            nameMax.add(i)
+        }
+        maximum = interPrice
+        maximumWeight = interWeight
+        reductionWeight = interPrice
+
+    }
+}*/
 
 fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> {
     val map = treasures
@@ -500,6 +539,7 @@ fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<Strin
     if (weight.sum() <= capacity) {
         return name.toSet()
     }
+
     for (i in 2..price.size) {
         val inter = bag(max, weight, name, price, i, price.size - 1, capacity, minWeight)
         val maxw = inter[0].toString().toInt()
