@@ -103,7 +103,7 @@ fun buildGrades(grades: Map<String, Int>): Map<Int, List<String>> {
         if (appraisal !in mutableMap) {
             mutableMap[appraisal] = mutableListOf()
         }
-        mutableMap[appraisal]!!.add(name)
+        mutableMap[appraisal]?.add(name)
     }
     return mutableMap
 }
@@ -201,18 +201,16 @@ fun mergePhoneBooks(mapA: Map<String, String>, mapB: Map<String, String>): Map<S
  *     -> mapOf("MSFT" to 150.0, "NFLX" to 40.0)
  */
 fun averageStockPrice(stockPrices: List<Pair<String, Double>>): Map<String, Double> {
-    val averageString = mutableListOf<String>()
-    val averageDouble = mutableListOf<MutableList<Double>>()
-    val averageCost = mutableMapOf<String, Double>()
+    val av = mutableMapOf<String, MutableList<Double>>()
     for ((stock, price) in stockPrices) {
-        if (stock !in averageString) {
-            averageString.add(stock)
-            averageDouble.add(mutableListOf())
+        if (stock !in av.keys) {
+            av[stock] = mutableListOf()
         }
-        averageDouble[averageString.indexOf(stock)].add(price)
+        av[stock]!!.add(price)
     }
-    for (i in averageString.indices) {
-        averageCost[averageString[i]] = averageDouble[i].average()
+    val averageCost = mutableMapOf<String, Double>()
+    for ((stock, price) in av) {
+        averageCost[stock] = price.average()
     }
     return averageCost
 }
