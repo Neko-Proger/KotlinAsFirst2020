@@ -269,11 +269,11 @@ fun mostExpensive(description: String): String {
                 nameMax = product[0]
             }
         } catch (e:IndexOutOfBoundsException) {
-            return "Any good with price 0.0"
+            return ""
         }
     }
-    if (max != 0.0) return nameMax
-    else return "Any good with price 0.0"
+    return if (max != 0.0) nameMax
+    else "Any good with price 0.0"
 }
 
 /**
