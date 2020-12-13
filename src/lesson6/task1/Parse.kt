@@ -77,7 +77,6 @@ fun main() {
  */
 fun dateStrToDigit(str: String): String {
     val d_m_y = str.split(" ")
-    val str = ""
     if (d_m_y.size != 3) return ""
     val months = mapOf(
         "января" to 1, "февраля" to 2, "марта" to 3, "апреля" to 4,
@@ -89,7 +88,7 @@ fun dateStrToDigit(str: String): String {
             "${if (d_m_y[0].toInt() < 10) "0${d_m_y[0].toInt()}" else d_m_y[0]}.0${months[d_m_y[1]]}.${d_m_y[2]}"
         else "${if (d_m_y[0].toInt() < 10) "0${d_m_y[0].toInt()}" else d_m_y[0]}.${months[d_m_y[1]]}.${d_m_y[2]}"
     else
-        str
+        ""
 }
 
 fun correctCalendar(d: Int, m: Int, y: Int): Boolean {
@@ -258,7 +257,23 @@ fun firstDuplicateIndex(str: String): Int = TODO()
  * или пустую строку при нарушении формата строки.
  * Все цены должны быть больше нуля либо равны нулю.
  */
-fun mostExpensive(description: String): String = TODO()
+fun mostExpensive(description: String): String {
+    val prod = description.split(";")
+    var max = 0.0
+    var nameMax = ""
+    for (pro in prod) {
+        try {
+            val product = pro.trim().split(" ")
+            if (product[1].toDouble() > max) {
+                max = product[1].toDouble()
+                nameMax = product[0]
+            }
+        } catch (e:IndexOutOfBoundsException) {
+            return ""
+        }
+    }
+    return nameMax
+}
 
 /**
  * Сложная (6 баллов)
