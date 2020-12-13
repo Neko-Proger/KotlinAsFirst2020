@@ -2,6 +2,7 @@
 
 package lesson6.task1
 
+
 // Урок 6: разбор строк, исключения
 // Максимальное количество баллов = 13
 // Рекомендуемое количество баллов = 11
@@ -74,7 +75,43 @@ fun main() {
  * Обратите внимание: некорректная с точки зрения календаря дата (например, 30.02.2009) считается неверными
  * входными данными.
  */
-fun dateStrToDigit(str: String): String = TODO()
+fun dateStrToDigit(str: String): String {
+    val d_m_y = str.split(" ")
+    if (d_m_y.size != 3) return ""
+    val months = mapOf(
+        "января" to 1, "февраля" to 2, "марта" to 3, "апреля" to 4,
+        "мая" to 5, "июня" to 6, "июля" to 7, "августа" to 8,
+        "сентября" to 9, "октября" to 10, "ноября" to 11, "декабря" to 12,
+    )
+    return if (correctCalendar(d_m_y[0].toInt(), months[d_m_y[1]] ?: 0, d_m_y[2].toInt()))
+        if (months[d_m_y[1]]!! < 10)
+            "${if (d_m_y[0].toInt() < 10) "0${d_m_y[0]}" else d_m_y[0]}.0${months[d_m_y[1]]}.${d_m_y[2]}"
+        else "${if (d_m_y[0].toInt() < 10) "0${d_m_y[0]}" else d_m_y[0]}.${months[d_m_y[1]]}.${d_m_y[2]}"
+    else
+        ""
+}
+
+fun correctCalendar(d: Int, m: Int, y: Int): Boolean {
+    when (m) {
+        1 -> return d in 1..31
+        2 -> {
+            return if (y % 400 == 0 || (y % 4 == 0 && y % 100 != 0))
+                d in 1..29
+            else d in 1..28
+        }
+        3 -> return d in 1..31
+        4 -> return d in 1..30
+        5 -> return d in 1..31
+        6 -> return d in 1..30
+        7 -> return d in 1..31
+        8 -> return d in 1..31
+        9 -> return d in 1..30
+        10 -> return d in 1..31
+        11 -> return d in 1..30
+        12 -> return d in 1..31
+    }
+    return false
+}
 
 /**
  * Средняя (4 балла)
@@ -86,7 +123,23 @@ fun dateStrToDigit(str: String): String = TODO()
  * Обратите внимание: некорректная с точки зрения календаря дата (например, 30 февраля 2009) считается неверными
  * входными данными.
  */
-fun dateDigitToStr(digital: String): String = TODO()
+fun dateDigitToStr(digital: String): String {
+    val d_m_y = digital.split(".")
+    if (d_m_y.size != 3) return ""
+    val months = mapOf(
+        "01" to "января", "02" to "февраля", "03" to "марта", "04" to "апреля",
+        "05" to "мая", "06" to "июня", "07" to "июля", "08" to "августа",
+        "09" to "сентября", "10" to "октября", "11" to "ноября", "12" to "декабря",
+    )
+    return try {
+        if (correctCalendar(d_m_y[0].toInt(), d_m_y[1].toInt(), d_m_y[2].toInt()))
+            "${d_m_y[0].toInt()} ${months[d_m_y[1]]} ${d_m_y[2]}"
+        else
+            ""
+    } catch (e: NumberFormatException) {
+        ""
+    }
+}
 
 /**
  * Средняя (4 балла)
@@ -99,11 +152,14 @@ fun dateDigitToStr(digital: String): String = TODO()
  * "+79211234567" или "123456789" для приведённых примеров.
  * Все символы в номере, кроме цифр, пробелов и +-(), считать недопустимыми.
  * При неверном формате вернуть пустую строку.
- *
  * PS: Дополнительные примеры работы функции можно посмотреть в соответствующих тестах.
  */
-fun flattenPhoneNumber(phone: String): String = TODO()
-
+fun flattenPhoneNumber(phone: String): String {
+    val number = phone.replace("-", "").replace(" ", "")
+    return if (number.matches(Regex("""(\+\d+)?(\(\d+\))?\d+"""))) {
+        number.replace("(", "").replace(")", "")
+    } else ""
+}
 /**
  * Средняя (5 баллов)
  *
@@ -114,7 +170,25 @@ fun flattenPhoneNumber(phone: String): String = TODO()
  * Прочитать строку и вернуть максимальное присутствующее в ней число (717 в примере).
  * При нарушении формата входной строки или при отсутствии в ней чисел, вернуть -1.
  */
-fun bestLongJump(jumps: String): Int = TODO()
+fun bestLongJump(jumps: String): Int {
+    val regex = """\d+""".toRegex()
+    var max = 0
+    var interValue = 0
+    val str = jumps.replace(" ", "")
+    var jump = regex.find(jumps)
+    if (str.contains(Regex("""([^1234567890%-])"""))) return -1
+    lim@ while (true) {
+        try {
+            interValue = jump!!.value.toInt()
+            if (max < interValue) max = interValue
+            jump = jump.next()
+        } catch (e: NullPointerException) {
+            break@lim
+        }
+    }
+    return if (max == 0) -1
+    else max
+}
 
 /**
  * Сложная (6 баллов)
@@ -127,7 +201,28 @@ fun bestLongJump(jumps: String): Int = TODO()
  * При нарушении формата входной строки, а также в случае отсутствия удачных попыток,
  * вернуть -1.
  */
-fun bestHighJump(jumps: String): Int = TODO()
+fun bestHighJump(jumps: String): Int {
+    val regex = """\d+\s(?:%)?\+""".toRegex()
+    val re = jumps
+    val str = jumps.replace(" ", "")
+    var jump = regex.find(jumps)
+    var interValue = "0"
+    var max = 0
+    if (str.contains(Regex("""([^1234567890+%-])"""))) return -1
+    lim@ while (true) {
+        try {
+            interValue = jump!!.value
+            val regex_r = """\d+""".toRegex().find(interValue)
+val intVal = regex_r!!.value.toInt()
+            if (max < intVal) max = intVal
+            jump = jump.next()
+        } catch (e: NullPointerException) {
+            break@lim
+        }
+    }
+    return if (max == 0) -1
+    else max
+}
 
 /**
  * Сложная (6 баллов)
