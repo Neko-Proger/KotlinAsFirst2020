@@ -85,8 +85,8 @@ fun dateStrToDigit(str: String): String {
     )
     return if (correctCalendar(d_m_y[0].toInt(), months[d_m_y[1]] ?: 0, d_m_y[2].toInt()))
         if (months[d_m_y[1]]!! < 10)
-            "${if (d_m_y[0].toInt() < 10) "0${d_m_y[0]}" else d_m_y[0]}.0${months[d_m_y[1]]}.${d_m_y[2]}"
-        else "${if (d_m_y[0].toInt() < 10) "0${d_m_y[0]}" else d_m_y[0]}.${months[d_m_y[1]]}.${d_m_y[2]}"
+            "${if (d_m_y[0].toInt() < 10) "0${d_m_y[0].toInt()}" else d_m_y[0]}.0${months[d_m_y[1]]}.${d_m_y[2]}"
+        else "${if (d_m_y[0].toInt() < 10) "0${d_m_y[0].toInt()}" else d_m_y[0]}.${months[d_m_y[1]]}.${d_m_y[2]}"
     else
         ""
 }
