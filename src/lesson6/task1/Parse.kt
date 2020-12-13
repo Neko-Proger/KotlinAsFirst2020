@@ -77,6 +77,7 @@ fun main() {
  */
 fun dateStrToDigit(str: String): String {
     val d_m_y = str.split(" ")
+    val str = ""
     if (d_m_y.size != 3) return ""
     val months = mapOf(
         "января" to 1, "февраля" to 2, "марта" to 3, "апреля" to 4,
@@ -88,7 +89,7 @@ fun dateStrToDigit(str: String): String {
             "${if (d_m_y[0].toInt() < 10) "0${d_m_y[0].toInt()}" else d_m_y[0]}.0${months[d_m_y[1]]}.${d_m_y[2]}"
         else "${if (d_m_y[0].toInt() < 10) "0${d_m_y[0].toInt()}" else d_m_y[0]}.${months[d_m_y[1]]}.${d_m_y[2]}"
     else
-        buildString {  }
+        str
 }
 
 fun correctCalendar(d: Int, m: Int, y: Int): Boolean {
