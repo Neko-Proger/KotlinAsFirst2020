@@ -83,12 +83,16 @@ fun dateStrToDigit(str: String): String {
         "мая" to 5, "июня" to 6, "июля" to 7, "августа" to 8,
         "сентября" to 9, "октября" to 10, "ноября" to 11, "декабря" to 12,
     )
-    return if (correctCalendar(d_m_y[0].toInt(), months[d_m_y[1]] ?: 0, d_m_y[2].toInt()))
-        if (months[d_m_y[1]]!! < 10)
-            "${if (d_m_y[0].toInt() < 10) "0${d_m_y[0].toInt()}" else d_m_y[0]}.0${months[d_m_y[1]]}.${d_m_y[2]}"
-        else "${if (d_m_y[0].toInt() < 10) "0${d_m_y[0].toInt()}" else d_m_y[0]}.${months[d_m_y[1]]}.${d_m_y[2]}"
-    else
+    return try {
+        if (correctCalendar(d_m_y[0].toInt(), months[d_m_y[1]] ?: 0, d_m_y[2].toInt()))
+            if (months[d_m_y[1]]!! < 10)
+                "${if (d_m_y[0].toInt() < 10) "0${d_m_y[0].toInt()}" else d_m_y[0]}.0${months[d_m_y[1]]}.${d_m_y[2]}"
+            else "${if (d_m_y[0].toInt() < 10) "0${d_m_y[0].toInt()}" else d_m_y[0]}.${months[d_m_y[1]]}.${d_m_y[2]}"
+        else
+            ""
+    } catch (e: NumberFormatException){
         ""
+    }
 }
 
 fun correctCalendar(d: Int, m: Int, y: Int): Boolean {
