@@ -85,7 +85,7 @@ fun dateStrToDigit(str: String): String {
         "сентября" to 9, "октября" to 10, "ноября" to 11, "декабря" to 12,
     )
     if (months[dMY[1]] ?: 0 != 0 && dMY[0].toIntOrNull() ?: 0 > 0) {
-        if (daysInMonth(months[dMY[1]] ?: 0, dMY[2].toIntOrNull() ?: 0) > dMY[0].toIntOrNull() ?: 0)
+        if (daysInMonth(months[dMY[1]] ?: 0, dMY[2].toIntOrNull() ?: 0) >= dMY[0].toIntOrNull() ?: 0)
             return "${twoDigitStr(dMY[0].toInt())}.${twoDigitStr(months[dMY[1]]!!.toInt())}.${dMY[2]}"
     }
     return ""
@@ -111,7 +111,7 @@ fun dateDigitToStr(digital: String): String {
         "09" to "сентября", "10" to "октября", "11" to "ноября", "12" to "декабря",
     )
     if (dMY[1].toIntOrNull() ?: 0 in 1..12 && dMY[0].toIntOrNull() ?: 0 > 0) {
-        if (daysInMonth(dMY[1].toIntOrNull() ?: 0, dMY[2].toIntOrNull() ?: 0) > dMY[0].toIntOrNull() ?: 0)
+        if (daysInMonth(dMY[1].toIntOrNull() ?: 0, dMY[2].toIntOrNull() ?: 0) >= dMY[0].toIntOrNull() ?: 0)
             return "${dMY[0].toInt()} ${months[dMY[1]]} ${dMY[2]}"
     }
     return ""
