@@ -241,8 +241,12 @@ fun transliterate(inputName: String, dictionary: Map<Char, String>, outputName: 
         var t = line
         val o = t.toCharArray()
         for ((key, value) in dictionary) {
-            t=t.toLowerCase()
-            t = t.replace(key.toString().toLowerCase().toRegex(), value)
+            t = t.toLowerCase()
+            try {
+                t = t.replace(key.toString().toLowerCase().toRegex(), value)
+            } catch (e: java.util.regex.PatternSyntaxException) {
+                continue
+            }
         }
         if (o[0].isUpperCase()) {
             val r = t.toCharArray()
