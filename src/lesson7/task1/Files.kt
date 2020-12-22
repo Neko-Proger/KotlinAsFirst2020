@@ -103,7 +103,7 @@ fun sibilants(inputName: String, outputName: String) {
     var t: String
     var list = listOf(
         "ЖЫ", "Жы", "жЫ", "жы", "ЧЫ", "Чы", "чЫ", "чы", "ШЫ", "Шы", "шЫ", "шы",
-        "ЩЫ", "Щы", "щЫ", "щы", "ЖЯ", "Жя", "жЯ", "жя", "ЧЯ", "Чя", "чЯ", "чя", "ШЯ", "Шя", "шЯ", "шЯ",
+        "ЩЫ", "Щы", "щЫ", "щы", "ЖЯ", "Жя", "жЯ", "жя", "ЧЯ", "Чя", "чЯ", "чя", "ШЯ", "Шя", "шЯ", "шя",
         "ЩЯ", "Щя", "щЯ", "щя", "ЖЮ", "Жю", "жЮ", "жю", "ЧЮ", "Чю", "чЮ", "чю", "ШЮ", "Шю", "шЮ", "шю",
         "ЩЮ", "Щю", "щЮ", "щю"
     )
@@ -236,12 +236,13 @@ fun top20Words(inputName: String): Map<String, Int> = TODO()
 
 fun transliterate(inputName: String, dictionary: Map<Char, String>, outputName: String) {
     val writer = File(outputName).bufferedWriter()
+
     for (line in File(inputName).readLines()) {
         var t = line
         val o = t.toCharArray()
-        t = t.toLowerCase()
         for ((key, value) in dictionary) {
-            t = t.replace(key.toString().toLowerCase().toRegex(), value.toLowerCase())
+            t=t.toLowerCase()
+            t = t.replace(key.toString().toLowerCase().toRegex(), value)
         }
         if (o[0].isUpperCase()) {
             val r = t.toCharArray()
