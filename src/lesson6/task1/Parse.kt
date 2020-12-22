@@ -2,6 +2,7 @@
 
 package lesson6.task1
 
+import lesson2.task2.daysInMonth
 
 // Урок 6: разбор строк, исключения
 // Максимальное количество баллов = 13
@@ -76,46 +77,20 @@ fun main() {
  * входными данными.
  */
 fun dateStrToDigit(str: String): String {
-    val d_m_y = str.split(" ")
-    if (d_m_y.size != 3) return ""
+    val dMY = str.split(" ")
+    if (dMY.size != 3) return ""
     val months = mapOf(
         "января" to 1, "февраля" to 2, "марта" to 3, "апреля" to 4,
         "мая" to 5, "июня" to 6, "июля" to 7, "августа" to 8,
         "сентября" to 9, "октября" to 10, "ноября" to 11, "декабря" to 12,
     )
-    return try {
-        if (correctCalendar(d_m_y[0].toInt(), months[d_m_y[1]] ?: 0, d_m_y[2].toInt()))
-            if (months[d_m_y[1]]!! < 10)
-                "${if (d_m_y[0].toInt() < 10) "0${d_m_y[0].toInt()}" else d_m_y[0]}.0${months[d_m_y[1]]}.${d_m_y[2]}"
-            else "${if (d_m_y[0].toInt() < 10) "0${d_m_y[0].toInt()}" else d_m_y[0]}.${months[d_m_y[1]]}.${d_m_y[2]}"
-        else
-            ""
-    } catch (e: NumberFormatException){
-        ""
+    if (months[dMY[1]] ?: 0 != 0 && dMY[0].toIntOrNull() ?: 0 > 0) {
+        if (daysInMonth(months[dMY[1]] ?: 0, dMY[2].toIntOrNull() ?: 0) > dMY[0].toIntOrNull() ?: 0)
+            return "${twoDigitStr(dMY[0].toInt())}.${twoDigitStr(months[dMY[1]]!!.toInt())}.${dMY[2]}"
     }
+    return ""
 }
 
-fun correctCalendar(d: Int, m: Int, y: Int): Boolean {
-    when (m) {
-        1 -> return d in 1..31
-        2 -> {
-            return if (y % 400 == 0 || (y % 4 == 0 && y % 100 != 0))
-                d in 1..29
-            else d in 1..28
-        }
-        3 -> return d in 1..31
-        4 -> return d in 1..30
-        5 -> return d in 1..31
-        6 -> return d in 1..30
-        7 -> return d in 1..31
-        8 -> return d in 1..31
-        9 -> return d in 1..30
-        10 -> return d in 1..31
-        11 -> return d in 1..30
-        12 -> return d in 1..31
-    }
-    return false
-}
 
 /**
  * Средняя (4 балла)
@@ -128,21 +103,18 @@ fun correctCalendar(d: Int, m: Int, y: Int): Boolean {
  * входными данными.
  */
 fun dateDigitToStr(digital: String): String {
-    val d_m_y = digital.split(".")
-    if (d_m_y.size != 3) return ""
+    val dMY = digital.split(".")
+    if (dMY.size != 3) return ""
     val months = mapOf(
         "01" to "января", "02" to "февраля", "03" to "марта", "04" to "апреля",
         "05" to "мая", "06" to "июня", "07" to "июля", "08" to "августа",
         "09" to "сентября", "10" to "октября", "11" to "ноября", "12" to "декабря",
     )
-    return try {
-        if (correctCalendar(d_m_y[0].toInt(), d_m_y[1].toInt(), d_m_y[2].toInt()))
-            "${d_m_y[0].toInt()} ${months[d_m_y[1]]} ${d_m_y[2]}"
-        else
-            ""
-    } catch (e: NumberFormatException) {
-        ""
+    if (dMY[1].toIntOrNull() ?: 0 in 1..12 && dMY[0].toIntOrNull() ?: 0 > 0) {
+        if (daysInMonth(dMY[1].toIntOrNull() ?: 0, dMY[2].toIntOrNull() ?: 0) > dMY[0].toIntOrNull() ?: 0)
+            return "${dMY[0].toInt()} ${months[dMY[1]]} ${dMY[2]}"
     }
+    return ""
 }
 
 /**
@@ -164,6 +136,7 @@ fun flattenPhoneNumber(phone: String): String {
         number.replace("(", "").replace(")", "")
     } else ""
 }
+
 /**
  * Средняя (5 баллов)
  *
@@ -179,16 +152,11 @@ fun bestLongJump(jumps: String): Int {
     var max = 0
     var interValue = 0
     val str = jumps.replace(" ", "")
-    var jump = regex.find(jumps)
-    if (str.contains(Regex("""([^1234567890%-])"""))) return -1
-    lim@ while (true) {
-        try {
-            interValue = jump!!.value.toInt()
-            if (max < interValue) max = interValue
-            jump = jump.next()
-        } catch (e: NullPointerException) {
-            break@lim
-        }
+    val jump = regex.findAll(jumps)
+    if (str.contains(Regex("""([^\d%-])"""))) return -1
+    for (i in jump) {
+        interValue = i.value.toInt()
+        if (max < interValue) max = interValue
     }
     return if (max == 0) -1
     else max
@@ -209,20 +177,15 @@ fun bestHighJump(jumps: String): Int {
     val regex = """\d+\s(?:%)?\+""".toRegex()
     val re = jumps
     val str = jumps.replace(" ", "")
-    var jump = regex.find(jumps)
+    var jump = regex.findAll(jumps)
     var interValue = "0"
     var max = 0
-    if (str.contains(Regex("""([^1234567890+%-])"""))) return -1
-    lim@ while (true) {
-        try {
-            interValue = jump!!.value
-            val regex_r = """\d+""".toRegex().find(interValue)
-val intVal = regex_r!!.value.toInt()
-            if (max < intVal) max = intVal
-            jump = jump.next()
-        } catch (e: NullPointerException) {
-            break@lim
-        }
+    if (str.contains(Regex("""([^\d+%-])"""))) return -1
+    for (i in jump) {
+        interValue = i.value
+        val regexr = """\d+""".toRegex().find(interValue)
+        val intVal = regexr!!.value.toInt()
+        if (max < intVal) max = intVal
     }
     return if (max == 0) -1
     else max
@@ -263,21 +226,20 @@ fun firstDuplicateIndex(str: String): Int = TODO()
  */
 fun mostExpensive(description: String): String {
     val prod = description.split(";")
-    var max = 0.0
+    var max = -1.0
     var nameMax = ""
     for (pro in prod) {
-        try {
-            val product = pro.trim().split(" ")
-            if (product[1].toDouble() > max) {
-                max = product[1].toDouble()
-                nameMax = product[0]
-            }
-        } catch (e:IndexOutOfBoundsException) {
-            return ""
+        val product = pro.trim().split(" ")
+        if (product.size < 2) continue
+        if (product[1].toDoubleOrNull() ?: 0.0 > max) {
+            max = product[1].toDouble()
+            nameMax = product[0]
         }
+
     }
-    return if (max != 0.0) nameMax
-    else "Any good with price 0.0"
+
+    return if (max != -1.0) nameMax
+    else ""
 }
 
 /**
