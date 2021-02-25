@@ -178,7 +178,7 @@ enum class Dimension(val abbreviation: String) {
     GRAM("g");
 }
 
-/***
+/**
  * Приставка размерности. Опять-таки можно добавить новые варианты (деци-, санти-, мега-, ...), но нельзя убирать
  */
 enum class DimensionPrefix(val abbreviation: String, val multiplier: Double) {
