@@ -71,17 +71,35 @@ class OpenHashSetTest {
         assertFalse(set1 == set2)
     }
 
+
     @Test
     @Tag("6")
-    fun testHashCode() {
+    fun delete() {
         val set1 = OpenHashSet<Int>(8)
         set1.add(1)
         set1.add(3)
         set1.add(6)
-        val set2 = OpenHashSet<Int>(4)
+        set1.delete(2)
+        for (word in listOf(1, 6)) {
+            assertTrue(word in set1.elements)
+        }
+        val set2 = OpenHashSet<Int>(7)
         set2.add(1)
+        set2.add(2)
         set2.add(3)
+        set2.add(4)
+        set2.add(5)
         set2.add(6)
-        assertTrue(set1.hashCode() == set2.hashCode())
+        set2.add(7)
+        set2.delete(1)
+        set2.delete(2)
+        set2.delete(3)
+        set2.delete(4)
+        set2.delete(5)
+        val set3 = OpenHashSet<Int>(2)
+        set3.add(6)
+        set3.add(7)
+        assertTrue(set2 == set3)
+        assertEquals(2, set2.size)
     }
 }

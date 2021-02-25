@@ -36,6 +36,7 @@ internal class DimensionalValueTest {
     @Tag("4")
     operator fun unaryMinus() {
         assertApproxEquals(DimensionalValue("-2 g"), -DimensionalValue("2 g"), 1e-12)
+        assertApproxEquals(DimensionalValue("-2 mm"), -DimensionalValue("2 mm"), 1e-12)
     }
 
     @Test
@@ -66,6 +67,7 @@ internal class DimensionalValueTest {
     @Tag("4")
     fun divDouble() {
         assertApproxEquals(DimensionalValue("42 mm"), DimensionalValue("42 m") / 1000.0, 1e-11)
+        assertApproxEquals(DimensionalValue("42 mm"), DimensionalValue("42000 mm") / 1000.0, 1e-11)
     }
 
     @Test
@@ -84,7 +86,11 @@ internal class DimensionalValueTest {
     @Test
     @Tag("4")
     fun compareTo() {
+//        assertEquals(1234, DimensionalValue("1 Kg").compareTo(DimensionalValue("1500 g")))
         assertTrue(DimensionalValue("1 Kg") < DimensionalValue("1500 g"))
         assertTrue(DimensionalValue("1 m") > DimensionalValue("900 mm"))
+        assertThrows(IllegalArgumentException::class.java) {
+            assertTrue(DimensionalValue("1 g") > DimensionalValue("900 mm"))
+        }
     }
 }
