@@ -15,7 +15,7 @@ package lesson12.task1
  *
  * В конструктор хеш-таблицы передаётся её вместимость (максимальное количество элементов)
  */
-class OpenHashSet<T>(val capacity: Int) {// time parametr jave generic //tipe t
+class OpenHashSet<T>(val capacity: Int) {
 
     /**
      * Массив для хранения элементов хеш-таблицы
