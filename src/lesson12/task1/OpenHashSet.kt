@@ -35,13 +35,7 @@ class OpenHashSet<T>(val capacity: Int) {
             return sum
         }
 
-    fun element(): Set<Any?> {
-        val e = mutableSetOf<Any?>()
-        for (i in 0 until capacity){
-            e.add(elements[i].first)
-        }
-        return e
-    }
+
 
 
     /**
