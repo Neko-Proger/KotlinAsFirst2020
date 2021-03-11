@@ -36,10 +36,15 @@ class DimensionalValue(value: Double, dimension: String) : Comparable<Dimensiona
                 if (ddimension == dis.abbreviation) {
                     return vvalue
                 }
-            }//обращение к строке по индексу
-            val x = ddimension.split("")
+            }
+            var e: String = ""
+            if (ddimension.length - 1 > 0) {
+                for (i in 0..ddimension.length - 2) {
+                    e += ddimension[i]
+                }
+            }
             for (dis in DimensionPrefix.values()) {
-                if (x[1] == dis.abbreviation) {//поправить
+                if (e == dis.abbreviation) {//поправить
                     return vvalue * dis.multiplier
                 }
             }
@@ -51,10 +56,10 @@ class DimensionalValue(value: Double, dimension: String) : Comparable<Dimensiona
      * БАЗОВАЯ размерность (опять-таки для 1.0Kg следует вернуть GRAM)
      */
     val dimension: Dimension
-        get() {/** тоже самое что и value */
-            val x = ddimension.trim().split("")
+        get() {
+            val e = ddimension[ddimension.length - 1].toString()
             for (dis in Dimension.values()) {
-                if (x[x.size - 2] == dis.abbreviation) {
+                if (ddimension[ddimension.length - 1].toString() == dis.abbreviation) {
                     return dis
                 }
             }
@@ -64,20 +69,10 @@ class DimensionalValue(value: Double, dimension: String) : Comparable<Dimensiona
     /**
      * Конструктор из строки. Формат строки: значение пробел размерность (1 Kg, 3 mm, 100 g и так далее).
      */
-    constructor(s: String) : this(0.0, s) {/** переделать*/
-        val x = s.split(" ")
-        val dimen = x[1].toList()
-        if (dimen.size == 2) {
-            for (dis in DimensionPrefix.values()) {
-                if (dimen[0].toString() == dis.abbreviation) {
-                    vvalue = x[0].toDouble() * dis.multiplier
-                    ddimension = dimen[1].toString()
-                }
-            }
-        } else {
-            vvalue = x[0].toDouble()
-            ddimension = x[1]
-        }
+
+    constructor(s: String) : this(s.split(" ")[0].toDouble(), s.split(" ")[1]) {
+        vvalue = value
+        ddimension = Dimension.valueOf(dimension.toString()).abbreviation
 
     }
 
@@ -86,10 +81,8 @@ class DimensionalValue(value: Double, dimension: String) : Comparable<Dimensiona
      * (нельзя складывать метры и килограммы)
      */
     operator fun plus(other: DimensionalValue): DimensionalValue {//
-        if (dimension == other.dimension) {
-            val r1 = Dimension.valueOf(dimension.toString())
-            val r = r1.abbreviation
-            return DimensionalValue(value + other.value, r)
+        if (ddimension == other.ddimension) {
+            return DimensionalValue(vvalue + other.vvalue, ddimension)
         }
         throw IllegalArgumentException()
     }
@@ -150,9 +143,9 @@ class DimensionalValue(value: Double, dimension: String) : Comparable<Dimensiona
      * Сравнение на больше/меньше. Если базовая размерность разная, бросить IllegalArgumentException
      */
     override fun compareTo(other: DimensionalValue): Int {
-        val x = DimensionalValue(vvalue, ddimension)
-        val otherX = DimensionalValue(other.vvalue, other.ddimension)
-        if (x.dimension == otherX.dimension) {
+        val e = ddimension
+        val t = other.ddimension
+        if (ddimension == other.ddimension) {
             return vvalue.toInt() - other.vvalue.toInt()
         }
         throw IllegalArgumentException()
@@ -177,6 +170,6 @@ enum class Dimension(val abbreviation: String) {
 enum class DimensionPrefix(val abbreviation: String, val multiplier: Double) {
     KILO("K", 1000.0),
     MILLI("m", 0.001),
-    SANTI("s",0.01),
+    SANTI("s", 0.01),
     DECI("d", 0.1);
 }

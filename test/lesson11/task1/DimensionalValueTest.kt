@@ -86,7 +86,6 @@ internal class DimensionalValueTest {
     @Test
     @Tag("4")
     fun compareTo() {
-//        assertEquals(1234, DimensionalValue("1 Kg").compareTo(DimensionalValue("1500 g")))
         assertTrue(DimensionalValue("1 Kg") < DimensionalValue("1500 g"))
         assertTrue(DimensionalValue("1 m") > DimensionalValue("900 mm"))
         assertThrows(IllegalArgumentException::class.java) {
