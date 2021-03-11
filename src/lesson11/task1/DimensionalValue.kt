@@ -132,8 +132,6 @@ class DimensionalValue(value: Double, dimension: String) : Comparable<Dimensiona
 
 
     override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other?.javaClass != javaClass) return false
         other as DimensionalValue
         if (other.vvalue == vvalue) return true
         return false
