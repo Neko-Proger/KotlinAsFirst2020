@@ -15,13 +15,12 @@ package lesson12.task1
  *
  * В конструктор хеш-таблицы передаётся её вместимость (максимальное количество элементов)
  */
-class OpenHashSet<T>(val capacity: Int) {
+class OpenHashSet<T>(val capacity: Int) {// time parametr jave generic //tipe t
 
     /**
      * Массив для хранения элементов хеш-таблицы
      */
-    internal val elements = Array<Any?>(capacity) { null }
-    private val liberty = Array<Boolean>(capacity) { false }
+    internal val elements = Array<Pair<Any?, Boolean>>(capacity) { Pair(null, false) }
 
     /**
      * Число элементов в хеш-таблице
@@ -30,18 +29,27 @@ class OpenHashSet<T>(val capacity: Int) {
         get() {
             var sum = 0
             for (i in 0 until capacity) {
-                if (!liberty[i]) break
-                if (elements[i] != null) sum += 1
+                if (!elements[i].second) break
+                if (elements[i].first != null) sum += 1
             }
             return sum
         }
+
+    fun element(): Set<Any?> {
+        val e = mutableSetOf<Any?>()
+        for (i in 0 until capacity){
+            e.add(elements[i].first)
+        }
+        return e
+    }
+
 
     /**
      * Признак пустоты
      */
     fun isEmpty(): Boolean {
         for (lib in elements) {
-            if (lib != null) return false
+            if (lib.first != null) return false
         }
         return true
     }
@@ -53,23 +61,23 @@ class OpenHashSet<T>(val capacity: Int) {
      */
     fun add(element: T): Boolean {
         for (i in 0 until capacity) {
-            if (elements[i] == element) return false
-            if (elements[i] == null) {
-                elements[i] = element
-                liberty[i] = true
+            if (elements[i].first == element) return false
+            if (elements[i].first == null) {
+                elements[i] = Pair(element, true)
                 return true
             }
         }
         return false
     }
 
+
     /**
      * Проверка, входит ли заданный элемент в хеш-таблицу
      */
     operator fun contains(element: T): Boolean {
         for (i in 0 until capacity) {
-            if (!liberty[i]) return false
-            if (elements[i] == element) return true
+            if (!elements[i].second) return false
+            if (elements[i].first == element) return true
         }
         return false
     }
@@ -81,10 +89,10 @@ class OpenHashSet<T>(val capacity: Int) {
     override fun equals(other: Any?): Boolean {
         other as OpenHashSet<*>
         for (i in other.elements) {
-            if (i !in elements && i != null) return false
+            if (i !in elements && i.first != null) return false
         }
         for (i in elements) {
-            if (i !in other.elements && i != null) return false
+            if (i !in other.elements && i.first != null) return false
         }
         return true
     }
@@ -92,9 +100,9 @@ class OpenHashSet<T>(val capacity: Int) {
 
     fun delete(element: T): Boolean {
         for (i in 0 until capacity) {
-            if (!liberty[i]) return false
-            if (elements[i] == element) {
-                elements[i] = null
+            if (!elements[i].second) return false
+            if (elements[i].first == element) {
+                elements[i] = Pair(null, true)
                 gdr()
                 return true
             }
@@ -105,20 +113,18 @@ class OpenHashSet<T>(val capacity: Int) {
     private fun gdr() {
         var sum = 0
         for (i in 0 until capacity) {
-            if (liberty[i] && elements[i] == null) sum += 1
+            if (elements[i] == Pair(null, true)) sum += 1
         }
         if (sum > capacity / 2) {
             val hasList1: MutableList<Any?> = mutableListOf()
             for (i in 0 until capacity) {
-                if (elements[i] != null && liberty[i]) hasList1.add(elements[i])
+                if (elements[i].first != null && elements[i].second) hasList1.add(elements[i].first)
             }
             for (i in 0 until capacity) {
-                elements[i] = null
-                liberty[i] = false
+                elements[i] = Pair(null, false)
             }
             for (i in 0 until hasList1.size) {
-                elements[i] = hasList1[i]
-                liberty[i] = true
+                elements[i] = Pair(hasList1[i], true)
             }
         }
     }

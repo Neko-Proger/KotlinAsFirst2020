@@ -36,10 +36,10 @@ class DimensionalValue(value: Double, dimension: String) : Comparable<Dimensiona
                 if (ddimension == dis.abbreviation) {
                     return vvalue
                 }
-            }
+            }//обращение к строке по индексу
             val x = ddimension.split("")
             for (dis in DimensionPrefix.values()) {
-                if (x[1] == dis.abbreviation) {
+                if (x[1] == dis.abbreviation) {//поправить
                     return vvalue * dis.multiplier
                 }
             }
@@ -51,7 +51,7 @@ class DimensionalValue(value: Double, dimension: String) : Comparable<Dimensiona
      * БАЗОВАЯ размерность (опять-таки для 1.0Kg следует вернуть GRAM)
      */
     val dimension: Dimension
-        get() {
+        get() {/** тоже самое что и value */
             val x = ddimension.trim().split("")
             for (dis in Dimension.values()) {
                 if (x[x.size - 2] == dis.abbreviation) {
@@ -64,7 +64,7 @@ class DimensionalValue(value: Double, dimension: String) : Comparable<Dimensiona
     /**
      * Конструктор из строки. Формат строки: значение пробел размерность (1 Kg, 3 mm, 100 g и так далее).
      */
-    constructor(s: String) : this(0.0, s) {
+    constructor(s: String) : this(0.0, s) {/** переделать*/
         val x = s.split(" ")
         val dimen = x[1].toList()
         if (dimen.size == 2) {
@@ -81,18 +81,15 @@ class DimensionalValue(value: Double, dimension: String) : Comparable<Dimensiona
 
     }
 
-
     /**
      * Сложение с другой величиной. Если базовая размерность разная, бросить IllegalArgumentException
      * (нельзя складывать метры и килограммы)
      */
-    operator fun plus(other: DimensionalValue): DimensionalValue {
-        val x = DimensionalValue(vvalue, ddimension)
-        val otherX = DimensionalValue(other.vvalue, other.ddimension)
-        if (x.dimension == otherX.dimension) {
-            val r1 = Dimension.valueOf(x.dimension.toString())
+    operator fun plus(other: DimensionalValue): DimensionalValue {//
+        if (dimension == other.dimension) {
+            val r1 = Dimension.valueOf(dimension.toString())
             val r = r1.abbreviation
-            return DimensionalValue(x.value + otherX.value, r)
+            return DimensionalValue(value + other.value, r)
         }
         throw IllegalArgumentException()
     }
@@ -106,12 +103,10 @@ class DimensionalValue(value: Double, dimension: String) : Comparable<Dimensiona
      * Вычитание другой величины. Если базовая размерность разная, бросить IllegalArgumentException
      */
     operator fun minus(other: DimensionalValue): DimensionalValue {
-        val x = DimensionalValue(vvalue, ddimension)
-        val otherX = DimensionalValue(other.vvalue, other.ddimension)
-        if (x.dimension == otherX.dimension) {
-            val r1 = Dimension.valueOf(x.dimension.toString())
+        if (dimension == other.dimension) {
+            val r1 = Dimension.valueOf(dimension.toString())
             val r = r1.abbreviation
-            return DimensionalValue(x.value - otherX.value, r)
+            return DimensionalValue(value - other.value, r)
         }
         throw IllegalArgumentException()
     }
@@ -130,12 +125,10 @@ class DimensionalValue(value: Double, dimension: String) : Comparable<Dimensiona
      * Деление на другую величину. Если базовая размерность разная, бросить IllegalArgumentException
      */
     operator fun div(other: DimensionalValue): Double {
-        val x = DimensionalValue(vvalue, ddimension)
-        val otherX = DimensionalValue(other.vvalue, other.ddimension)
-        if (x.dimension == otherX.dimension) {
-            val r1 = Dimension.valueOf(x.dimension.toString())
+        if (dimension == other.dimension) {
+            val r1 = Dimension.valueOf(dimension.toString())
             val r = r1.abbreviation
-            return x.value / otherX.value
+            return value / other.value
         }
         throw IllegalArgumentException()
     }

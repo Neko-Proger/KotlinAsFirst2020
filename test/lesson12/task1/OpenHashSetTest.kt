@@ -39,7 +39,7 @@ class OpenHashSetTest {
         assertTrue(set.add("gamma"))
         assertTrue(set.add("omega"))
         for (word in listOf("alpha", "beta", "gamma", "omega")) {
-            assertTrue(word in set.elements)
+            assertTrue(word in set.element().toString())
         }
         assertFalse(set.add("???"))
     }
@@ -81,7 +81,7 @@ class OpenHashSetTest {
         set1.add(6)
         set1.delete(2)
         for (word in listOf(1, 6)) {
-            assertTrue(word in set1.elements)
+            assertTrue(word.toString() in set1.element().toString())
         }
         val set2 = OpenHashSet<Int>(7)
         set2.add(1)
